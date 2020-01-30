@@ -3,10 +3,14 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4AE7F2A8DAF6FC4C75B67D7B /* Pods_recordingAppTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A835AA4979D52C74A7EA34CD /* Pods_recordingAppTests.framework */; };
+		592F90371C4046F1ACCBF0F5 /* Pods_recordingApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7B393C4E0CC6ACD767CBD60 /* Pods_recordingApp.framework */; };
+		8EA14A17C08912694CADC055 /* Pods_recordingApp_recordingAppUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 40208FCD2EDD35C6AE758853 /* Pods_recordingApp_recordingAppUITests.framework */; };
+		DA0CE93223CCBC330018C78F /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA0CE93123CCBC330018C78F /* AudioToolbox.framework */; };
 		DA13CF1A233651A500E0F1ED /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA13CF19233651A500E0F1ED /* AppDelegate.swift */; };
 		DA13CF1C233651A500E0F1ED /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA13CF1B233651A500E0F1ED /* ViewController.swift */; };
 		DA13CF1F233651A500E0F1ED /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DA13CF1D233651A500E0F1ED /* Main.storyboard */; };
@@ -14,6 +18,10 @@
 		DA13CF24233651A900E0F1ED /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DA13CF22233651A900E0F1ED /* LaunchScreen.storyboard */; };
 		DA13CF2F233651A900E0F1ED /* recordingAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA13CF2E233651A900E0F1ED /* recordingAppTests.swift */; };
 		DA13CF3A233651A900E0F1ED /* recordingAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA13CF39233651A900E0F1ED /* recordingAppUITests.swift */; };
+		DA1ED92823486D9F00614323 /* WaitTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA1ED92723486D9F00614323 /* WaitTableViewCell.swift */; };
+		DA1ED92C234875A300614323 /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA1ED92B234875A300614323 /* TableViewController.swift */; };
+		DA1ED92E2348798800614323 /* SharedVariable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA1ED92D2348798800614323 /* SharedVariable.swift */; };
+		DAC8375823478B0E00C1B019 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DAC8375723478B0E00C1B019 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,6 +42,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		206FEFB3D37D08E7AAF4B2AB /* Pods-recordingAppTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-recordingAppTests.debug.xcconfig"; path = "Target Support Files/Pods-recordingAppTests/Pods-recordingAppTests.debug.xcconfig"; sourceTree = "<group>"; };
+		23BEADA98A5D23195645183B /* Pods-recordingApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-recordingApp.release.xcconfig"; path = "Target Support Files/Pods-recordingApp/Pods-recordingApp.release.xcconfig"; sourceTree = "<group>"; };
+		40208FCD2EDD35C6AE758853 /* Pods_recordingApp_recordingAppUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_recordingApp_recordingAppUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5944CFCB2CA40F95D91CA5D0 /* Pods-recordingApp-recordingAppUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-recordingApp-recordingAppUITests.debug.xcconfig"; path = "Target Support Files/Pods-recordingApp-recordingAppUITests/Pods-recordingApp-recordingAppUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		70F82579A91CBAD772EFB4E0 /* Pods-recordingApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-recordingApp.debug.xcconfig"; path = "Target Support Files/Pods-recordingApp/Pods-recordingApp.debug.xcconfig"; sourceTree = "<group>"; };
+		93ED8B404BC85B8287933322 /* Pods-recordingAppTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-recordingAppTests.release.xcconfig"; path = "Target Support Files/Pods-recordingAppTests/Pods-recordingAppTests.release.xcconfig"; sourceTree = "<group>"; };
+		A835AA4979D52C74A7EA34CD /* Pods_recordingAppTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_recordingAppTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C7B393C4E0CC6ACD767CBD60 /* Pods_recordingApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_recordingApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CCFE091DA1DDF102774EE49C /* Pods-recordingApp-recordingAppUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-recordingApp-recordingAppUITests.release.xcconfig"; path = "Target Support Files/Pods-recordingApp-recordingAppUITests/Pods-recordingApp-recordingAppUITests.release.xcconfig"; sourceTree = "<group>"; };
+		DA0CE93123CCBC330018C78F /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		DA13CF16233651A500E0F1ED /* recordingApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = recordingApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA13CF19233651A500E0F1ED /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DA13CF1B233651A500E0F1ED /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -47,6 +65,11 @@
 		DA13CF35233651A900E0F1ED /* recordingAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = recordingAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA13CF39233651A900E0F1ED /* recordingAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = recordingAppUITests.swift; sourceTree = "<group>"; };
 		DA13CF3B233651A900E0F1ED /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DA1780622337B482003B4E33 /* recordingApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = recordingApp.entitlements; sourceTree = "<group>"; };
+		DA1ED92723486D9F00614323 /* WaitTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaitTableViewCell.swift; sourceTree = "<group>"; };
+		DA1ED92B234875A300614323 /* TableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
+		DA1ED92D2348798800614323 /* SharedVariable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedVariable.swift; sourceTree = "<group>"; };
+		DAC8375723478B0E00C1B019 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +77,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				592F90371C4046F1ACCBF0F5 /* Pods_recordingApp.framework in Frameworks */,
+				DA0CE93223CCBC330018C78F /* AudioToolbox.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -61,6 +86,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4AE7F2A8DAF6FC4C75B67D7B /* Pods_recordingAppTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -68,12 +94,26 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8EA14A17C08912694CADC055 /* Pods_recordingApp_recordingAppUITests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		89A2D266CB1CD4143DDC3D34 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				70F82579A91CBAD772EFB4E0 /* Pods-recordingApp.debug.xcconfig */,
+				23BEADA98A5D23195645183B /* Pods-recordingApp.release.xcconfig */,
+				5944CFCB2CA40F95D91CA5D0 /* Pods-recordingApp-recordingAppUITests.debug.xcconfig */,
+				CCFE091DA1DDF102774EE49C /* Pods-recordingApp-recordingAppUITests.release.xcconfig */,
+				206FEFB3D37D08E7AAF4B2AB /* Pods-recordingAppTests.debug.xcconfig */,
+				93ED8B404BC85B8287933322 /* Pods-recordingAppTests.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		DA13CF0D233651A500E0F1ED = {
 			isa = PBXGroup;
 			children = (
@@ -81,6 +121,8 @@
 				DA13CF2D233651A900E0F1ED /* recordingAppTests */,
 				DA13CF38233651A900E0F1ED /* recordingAppUITests */,
 				DA13CF17233651A500E0F1ED /* Products */,
+				89A2D266CB1CD4143DDC3D34 /* Pods */,
+				EFFF38B9B627B4AF809F7E1A /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -97,9 +139,14 @@
 		DA13CF18233651A500E0F1ED /* recordingApp */ = {
 			isa = PBXGroup;
 			children = (
+				DAC8375723478B0E00C1B019 /* GoogleService-Info.plist */,
+				DA1780622337B482003B4E33 /* recordingApp.entitlements */,
 				DA13CF19233651A500E0F1ED /* AppDelegate.swift */,
 				DA13CF1B233651A500E0F1ED /* ViewController.swift */,
+				DA1ED92D2348798800614323 /* SharedVariable.swift */,
 				DA13CF1D233651A500E0F1ED /* Main.storyboard */,
+				DA1ED92723486D9F00614323 /* WaitTableViewCell.swift */,
+				DA1ED92B234875A300614323 /* TableViewController.swift */,
 				DA13CF20233651A900E0F1ED /* Assets.xcassets */,
 				DA13CF22233651A900E0F1ED /* LaunchScreen.storyboard */,
 				DA13CF25233651A900E0F1ED /* Info.plist */,
@@ -125,6 +172,17 @@
 			path = recordingAppUITests;
 			sourceTree = "<group>";
 		};
+		EFFF38B9B627B4AF809F7E1A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				DA0CE93123CCBC330018C78F /* AudioToolbox.framework */,
+				C7B393C4E0CC6ACD767CBD60 /* Pods_recordingApp.framework */,
+				40208FCD2EDD35C6AE758853 /* Pods_recordingApp_recordingAppUITests.framework */,
+				A835AA4979D52C74A7EA34CD /* Pods_recordingAppTests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -132,9 +190,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = DA13CF3E233651A900E0F1ED /* Build configuration list for PBXNativeTarget "recordingApp" */;
 			buildPhases = (
+				87866D0092DA5304549ACF2D /* [CP] Check Pods Manifest.lock */,
 				DA13CF12233651A500E0F1ED /* Sources */,
 				DA13CF13233651A500E0F1ED /* Frameworks */,
 				DA13CF14233651A500E0F1ED /* Resources */,
+				4077EA2A959ACB2B6A2142D7 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -149,6 +209,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = DA13CF41233651A900E0F1ED /* Build configuration list for PBXNativeTarget "recordingAppTests" */;
 			buildPhases = (
+				E725314E99B610E9373689A1 /* [CP] Check Pods Manifest.lock */,
 				DA13CF26233651A900E0F1ED /* Sources */,
 				DA13CF27233651A900E0F1ED /* Frameworks */,
 				DA13CF28233651A900E0F1ED /* Resources */,
@@ -167,9 +228,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = DA13CF44233651A900E0F1ED /* Build configuration list for PBXNativeTarget "recordingAppUITests" */;
 			buildPhases = (
+				AA6A027B0C04E57DD4CB12A1 /* [CP] Check Pods Manifest.lock */,
 				DA13CF31233651A900E0F1ED /* Sources */,
 				DA13CF32233651A900E0F1ED /* Frameworks */,
 				DA13CF33233651A900E0F1ED /* Resources */,
+				8E833372026D9CB847754B7D /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -193,6 +256,17 @@
 				TargetAttributes = {
 					DA13CF15233651A500E0F1ED = {
 						CreatedOnToolsVersion = 10.3;
+						SystemCapabilities = {
+							com.apple.InAppPurchase = {
+								enabled = 0;
+							};
+							com.apple.InterAppAudio = {
+								enabled = 1;
+							};
+							com.apple.Keychain = {
+								enabled = 1;
+							};
+						};
 					};
 					DA13CF29233651A900E0F1ED = {
 						CreatedOnToolsVersion = 10.3;
@@ -230,6 +304,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DA13CF24233651A900E0F1ED /* LaunchScreen.storyboard in Resources */,
+				DAC8375823478B0E00C1B019 /* GoogleService-Info.plist in Resources */,
 				DA13CF21233651A900E0F1ED /* Assets.xcassets in Resources */,
 				DA13CF1F233651A500E0F1ED /* Main.storyboard in Resources */,
 			);
@@ -251,13 +326,119 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		4077EA2A959ACB2B6A2142D7 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-recordingApp/Pods-recordingApp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-recordingApp/Pods-recordingApp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-recordingApp/Pods-recordingApp-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		87866D0092DA5304549ACF2D /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-recordingApp-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		8E833372026D9CB847754B7D /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-recordingApp-recordingAppUITests/Pods-recordingApp-recordingAppUITests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-recordingApp-recordingAppUITests/Pods-recordingApp-recordingAppUITests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-recordingApp-recordingAppUITests/Pods-recordingApp-recordingAppUITests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		AA6A027B0C04E57DD4CB12A1 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-recordingApp-recordingAppUITests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E725314E99B610E9373689A1 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-recordingAppTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		DA13CF12233651A500E0F1ED /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				DA13CF1C233651A500E0F1ED /* ViewController.swift in Sources */,
+				DA1ED92823486D9F00614323 /* WaitTableViewCell.swift in Sources */,
+				DA1ED92E2348798800614323 /* SharedVariable.swift in Sources */,
 				DA13CF1A233651A500E0F1ED /* AppDelegate.swift in Sources */,
+				DA1ED92C234875A300614323 /* TableViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -430,9 +611,12 @@
 		};
 		DA13CF3F233651A900E0F1ED /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 70F82579A91CBAD772EFB4E0 /* Pods-recordingApp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = recordingApp/recordingApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = A83CWH6LH4;
 				INFOPLIST_FILE = recordingApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -447,9 +631,12 @@
 		};
 		DA13CF40233651A900E0F1ED /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 23BEADA98A5D23195645183B /* Pods-recordingApp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = recordingApp/recordingApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = A83CWH6LH4;
 				INFOPLIST_FILE = recordingApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -464,6 +651,7 @@
 		};
 		DA13CF42233651A900E0F1ED /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 206FEFB3D37D08E7AAF4B2AB /* Pods-recordingAppTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -484,6 +672,7 @@
 		};
 		DA13CF43233651A900E0F1ED /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 93ED8B404BC85B8287933322 /* Pods-recordingAppTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -504,6 +693,7 @@
 		};
 		DA13CF45233651A900E0F1ED /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5944CFCB2CA40F95D91CA5D0 /* Pods-recordingApp-recordingAppUITests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -523,6 +713,7 @@
 		};
 		DA13CF46233651A900E0F1ED /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CCFE091DA1DDF102774EE49C /* Pods-recordingApp-recordingAppUITests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;

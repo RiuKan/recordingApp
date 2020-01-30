@@ -1,0 +1,6 @@
+framework module Pods_recordingApp_recordingAppUITests {
+  umbrella header "Pods-recordingApp-recordingAppUITests-umbrella.h"
+
+  export *
+  module * { export * }
+}
