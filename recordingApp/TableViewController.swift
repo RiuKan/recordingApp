@@ -15,7 +15,11 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     var ref:DatabaseReference!
     var selected : IndexPath!
     var clickNumber : Int = 0
+    var cell : WaitTableViewCell!
+    var pastCell : WaitTableViewCell!
+    var status: [String:String] = ["cell":"wait","pastCell":"wait"]
     let cellIdentifier = "cell"
+    
  
     @IBOutlet var refresh: UIBarButtonItem!
     @IBOutlet var tableview: UITableView!
@@ -52,8 +56,9 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         //        }
         return value.count
     }
-    func visibleChange(_ target: String,_ cell: WaitTableViewCell)
+    func visibleChange(_ target: String,_ cell: WaitTableViewCell,_ letter : String)
     {
+        status[letter] = target
         if target == "wait"
         {
             
@@ -105,13 +110,14 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {   if indexPath.row == selected?.row {
         let cell =  tableview.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! WaitTableViewCell
-        visibleChange("select", cell)
+        visibleChange("select", cell,"cell")
         cell.fileName?.text = Array(value.keys)[indexPath.row]
         // 특정 cell만 바꾼 cell 을 내놔야 하는데 
         return cell
     }else{
         let cell = tableview.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! WaitTableViewCell
-        visibleChange("wait", cell)
+        visibleChange("wait", cell,"cell")
+        status["cell"] = "select"
         cell.fileName?.text = Array(value.keys)[indexPath.row]
         
         return cell
@@ -119,25 +125,73 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         
         
     }
+    
+   
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
     {
-        let cell = tableview.cellForRow(at: indexPath) as! WaitTableViewCell
-        
         tableview.deselectRow(at: indexPath, animated: false)
-        visibleChange("select", cell)
         if clickNumber == 0
         {
-        selected = indexPath
-        clickNumber = 1
-        }
-        else if clickNumber == 1 {
-            let pastCell = try? tableview.cellForRow(at: selected) as! WaitTableViewCell
-        guard visibleChange("wait", pastCell)
             selected = indexPath
-        
-        
+            clickNumber = 1
+            let cell = tableview.cellForRow(at: indexPath) as! WaitTableViewCell
+            
+            visibleChange("select", cell, "cell")
+        }
+        else
+        {
+            if  status["cell"] == "select"
+                    {
+                        let cell = tableview.cellForRow(at: indexPath) as! WaitTableViewCell
+            
+                        visibleChange("select", cell, "cell")
+                        let pastCell = tableview.cellForRow(at: selected) as! WaitTableViewCell?
+                            if pastCell != nil, let pastCell = pastCell
+                            {
+                                visibleChange("wait", pastCell, "pastCell")
+                                
+                            }
+                        if indexPath.row == selected.row {
+                            clickNumber = 0
+                        }
+                        selected = indexPath
+                }
+                else
+                {
+                    let cell = tableview.cellForRow(at: indexPath) as! WaitTableViewCell
+            
+                    visibleChange("wait", cell, "cell")
+                    
+                }
+        }
     }
-    }
+
+//        if status["cell"] == "wait"{
+//        let cell = tableview.cellForRow(at: indexPath) as! WaitTableViewCell
+//
+//        visibleChange("select", cell,"cell")
+//        }
+        
+//        else if clickNumber == 1 {
+//            if selected.row != indexPath.row{
+//            let pastCell = tableview.cellForRow(at: selected) as! WaitTableViewCell?
+//
+//            if pastCell != nil, let pastCell = pastCell
+//            {
+//            visibleChange("wait", pastCell,"pastCell")
+//
+//            }
+//            }else {
+//                if status["cell"] == "select" {
+//                    let cell = tableview.cellForRow(at: indexPath) as! WaitTableViewCell
+//
+//                    visibleChange("wait", cell, "cell")
+//
+//
+//            }
+//            selected = indexPath
+        
     
     override func viewDidLoad()
     {
@@ -155,7 +209,8 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         
         initLayout()
         self.tableview.reloadData()
-        
+        clickNumber = 0
+        selected = nil
         
         
         
