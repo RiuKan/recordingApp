@@ -100,13 +100,14 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     func initLayout()
     {
         tableview.rowHeight = UITableView.automaticDimension
-        tableview.estimatedRowHeight = 200
+        tableview.estimatedRowHeight = 50
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
     {
         return UITableView.automaticDimension
     }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {   if indexPath.row == selected?.row {
         let cell =  tableview.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! WaitTableViewCell
