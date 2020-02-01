@@ -21,12 +21,10 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     let cellIdentifier = "cell"
     
  
-    @IBOutlet var refresh: UIBarButtonItem!
+    
     @IBOutlet var tableview: UITableView!
     
-    @IBAction func refreshButton(sender: UIBarButtonItem) {
-        self.tableview.reloadData()
-    }
+    
     func downloadLists () {
         let database = Database.database()
        ref = database.reference()
@@ -139,6 +137,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
             let cell = tableview.cellForRow(at: indexPath) as! WaitTableViewCell
             
             visibleChange("select", cell, "cell")
+            SharedVariable.Shared.nameOfFile = cell.fileName?.text
         }
         else
         {
@@ -147,6 +146,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
                         let cell = tableview.cellForRow(at: indexPath) as! WaitTableViewCell
             
                         visibleChange("select", cell, "cell")
+                        SharedVariable.Shared.nameOfFile = cell.fileName?.text
                         let pastCell = tableview.cellForRow(at: selected) as! WaitTableViewCell?
                             if pastCell != nil, let pastCell = pastCell
                             {
@@ -208,7 +208,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         
         
         
-        initLayout()
+        
         self.tableview.reloadData()
         clickNumber = 0
         selected = nil

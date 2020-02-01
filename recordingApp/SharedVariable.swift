@@ -11,7 +11,7 @@ import UIKit
 class SharedVariable:NSObject  {
     static let Shared = SharedVariable()
     
-    
+    var nameOfFile: String!
     func convertNSTimeInterval2String(_ time:TimeInterval) -> String {
         //재생시간의 매개변수인 time값을 60으로 나눈 몫을 정수 값으로 변환하여 상수 min에 초기화
         let hour = Int(time/3600)
@@ -28,4 +28,5 @@ class SharedVariable:NSObject  {
     
 
 }
+    
 }

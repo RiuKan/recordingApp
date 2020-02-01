@@ -8,11 +8,15 @@
 
 import UIKit
 import AVFoundation
+import FirebaseDatabase
+import FirebaseStorage
 
 class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationControllerDelegate{
     var progressTimer : Timer!
     var audioPlayer: AVAudioPlayer!
     let maxVolume: Float = 10.0
+    var ref: DatabaseReference!
+    var refSto: StorageReference!
     // 실행 ui
     @IBOutlet weak var progressView: UIProgressView!
     @IBOutlet weak var playButton: UIButton!
@@ -44,6 +48,7 @@ class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationCon
     @IBAction func Buttontouched ( _ sender: UIButton){
         if sender == playButton {
             buttonState(false, pause: true, stop: true)
+            
             audioPlayer.play()
             progressTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: timePlayerSelector, userInfo: nil, repeats: true)
             
