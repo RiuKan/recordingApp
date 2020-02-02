@@ -11,12 +11,13 @@ import AVFoundation
 import FirebaseDatabase
 import FirebaseStorage
 
-class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationControllerDelegate{
+class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationControllerDelegate {
     var progressTimer : Timer!
     var audioPlayer: AVAudioPlayer!
     let maxVolume: Float = 10.0
     var ref: DatabaseReference!
-    var refSto: StorageReference!
+    let filemag = FileManager.default
+    let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
     // 실행 ui
     @IBOutlet weak var progressView: UIProgressView!
     @IBOutlet weak var playButton: UIButton!
@@ -48,9 +49,40 @@ class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationCon
     @IBAction func Buttontouched ( _ sender: UIButton){
         if sender == playButton {
             buttonState(false, pause: true, stop: true)
+            if let file = SharedVariable.Shared.nameOfFile
+            {
+            let stor = Storage.storage()
+            let storef = stor.reference()
+            let islandRef = storef.child("Recordings/\(file).m4a")
             
-            audioPlayer.play()
-            progressTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: timePlayerSelector, userInfo: nil, repeats: true)
+            
+            
+            let localURL = documentDirectory.appendingPathComponent("\(file).m4a")
+            
+            
+            let downloadTask = islandRef.write(toFile: localURL)
+            { url, error in
+                if let error = error
+                {
+                   print("error")
+                }
+                else
+                {
+                    print("succes")
+                }
+            }
+            
+            let observer = downloadTask.observe(.progress) { snapshot in
+                if let test = snapshot.progress?.completedUnitCount, snapshot.progress?.isFinished == true {
+                    
+                    
+                    self.audioFile = localURL
+                    self.preparePlay()
+                    self.audioPlayer.play()
+                    self.progressTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: self.timePlayerSelector, userInfo: nil, repeats: true)
+                }         }
+            }
+            
             
             
         } else if sender == pauseButton {
@@ -75,11 +107,12 @@ class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationCon
     func preparePlay () {
         
         
-        
+        if let audioFile = audioFile {
         do {
-            audioPlayer = try AVAudioPlayer(contentsOf: audioFile) //오류발생 가능 함수
+            audioPlayer = try AVAudioPlayer(contentsOf: audioFile ) //오류발생 가능 함수
         } catch let error as NSError { //오류타입
             print("error-initplay : \(error)")  //오류타입에 대한 처리 구문
+        }
         }
         endTime.text = SharedVariable.Shared.convertNSTimeInterval2String(audioPlayer.duration)
         audioPlayer.delegate = self
