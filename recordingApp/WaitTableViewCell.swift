@@ -72,15 +72,15 @@ class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationCon
                 }
             }
             
-            let observer = downloadTask.observe(.progress) { snapshot in
-                if let test = snapshot.progress?.completedUnitCount, snapshot.progress?.isFinished == true {
+            let observer = downloadTask.observe(.success) { snapshot in
+                
                     
                     
                     self.audioFile = localURL
                     self.preparePlay()
                     self.audioPlayer.play()
                     self.progressTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: self.timePlayerSelector, userInfo: nil, repeats: true)
-                }         }
+                       }
             }
             
             
@@ -109,7 +109,7 @@ class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationCon
         
         if let audioFile = audioFile {
         do {
-            audioPlayer = try AVAudioPlayer(contentsOf: audioFile ) //오류발생 가능 함수
+            audioPlayer = try AVAudioPlayer(contentsOf: audioFile) //오류발생 가능 함수
         } catch let error as NSError { //오류타입
             print("error-initplay : \(error)")  //오류타입에 대한 처리 구문
         }
