@@ -16,7 +16,9 @@ class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationCon
     var audioPlayer: AVAudioPlayer!
     let maxVolume: Float = 10.0
     var ref: DatabaseReference!
-    let filemag = FileManager.default
+    var repeater: Int = 0
+    var downloadTask: StorageDownloadTask!
+   
     let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
     // 실행 ui
     @IBOutlet weak var progressView: UIProgressView!
@@ -46,9 +48,28 @@ class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationCon
         //재생버튼 활성화 나머지 버튼 비활성화
         buttonState(true, pause: false, stop: false)
     }
+    
+    func update ( _ refer: StorageReference , _ localURL: URL)  {
+        self.downloadTask = refer.write(toFile: localURL)
+        { url, error in
+            if let error = error
+            {   print("error")
+                
+                self.update(refer,localURL)
+            }
+            else
+            {
+                print("succes")
+                
+                
+            }
+    }
+    }
+
     @IBAction func Buttontouched ( _ sender: UIButton){
         if sender == playButton {
             buttonState(false, pause: true, stop: true)
+            if audioPlayer.is
             if let file = SharedVariable.Shared.nameOfFile
             {
             let stor = Storage.storage()
@@ -59,18 +80,10 @@ class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationCon
             
             let localURL = documentDirectory.appendingPathComponent("\(file).m4a")
             
+                
+                update(islandRef,localURL)
             
-            let downloadTask = islandRef.write(toFile: localURL)
-            { url, error in
-                if let error = error
-                {
-                   print("error")
-                }
-                else
-                {
-                    print("succes")
-                }
-            }
+                
             
             let observer = downloadTask.observe(.success) { snapshot in
                 
@@ -85,16 +98,17 @@ class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationCon
             
             
             
-        } else if sender == pauseButton {
+        } else if sender == pauseButton, playButton.isEnabled == false {
+            
             audioPlayer.pause()
             buttonState(true, pause: false, stop: true)
             
-        } else if sender == stopButton {
+        } else if sender == stopButton, playButton.isEnabled == false {
             
             audioPlayer.stop()
             audioPlayer.currentTime = 0
             currentTime.text = SharedVariable.Shared.convertNSTimeInterval2String(0)
-            buttonState(true, pause: false, stop: false)
+            
             
             progressTimer.invalidate()
         }
@@ -119,7 +133,7 @@ class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationCon
         audioPlayer.prepareToPlay()
         progressView.progress = 0
         audioPlayer.volume = 5.0
-        buttonState( true, pause: false, stop: false)
+        
         
     }
     func buttonState (_ start: Bool, pause: Bool, stop: Bool) {
@@ -130,7 +144,7 @@ class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationCon
     }
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+        
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
