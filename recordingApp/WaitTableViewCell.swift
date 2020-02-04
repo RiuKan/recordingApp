@@ -43,18 +43,20 @@ class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationCon
     var audioFile : URL!
     let timePlayerSelector:Selector = #selector(WaitTableViewCell.updatePlayTime)
     
+   
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        audioPlayer.stop()
         progressTimer.invalidate()
         //재생버튼 활성화 나머지 버튼 비활성화
-        buttonState(true, pause: false, stop: false)
+        
+        
     }
     
     func update ( _ refer: StorageReference , _ localURL: URL)  {
         self.downloadTask = refer.write(toFile: localURL)
         { url, error in
             if let error = error
-            {   print("error")
-                
+            {   SharedVariable.Shared.showToast("/(error)",self.viewWithTag(1)!)
                 self.update(refer,localURL)
             }
             else
@@ -68,8 +70,15 @@ class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationCon
 
     @IBAction func Buttontouched ( _ sender: UIButton){
         if sender == playButton {
-            buttonState(false, pause: true, stop: true)
-            if audioPlayer.is
+            
+            if pauseButton.isEnabled == false, stopButton.isEnabled == true{
+                buttonState(false, pause: true, stop: true)
+                
+                audioPlayer.play()
+                
+            }
+            else {
+                
             if let file = SharedVariable.Shared.nameOfFile
             {
             let stor = Storage.storage()
@@ -92,25 +101,29 @@ class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationCon
                     self.audioFile = localURL
                     self.preparePlay()
                     self.audioPlayer.play()
-                    self.progressTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: self.timePlayerSelector, userInfo: nil, repeats: true)
+                self.buttonState(false, pause: true, stop: true)
+                    self.progressTimer = Timer.scheduledTimer(timeInterval: 0.01, target: self, selector: self.timePlayerSelector, userInfo: nil, repeats: true)
                        }
+            }
             }
             
             
-            
-        } else if sender == pauseButton, playButton.isEnabled == false {
+        } else if sender == pauseButton, playButton.isEnabled == false, audioPlayer.isPlaying == true {
             
             audioPlayer.pause()
+            
             buttonState(true, pause: false, stop: true)
             
-        } else if sender == stopButton, playButton.isEnabled == false {
-            
+        } else if sender == stopButton, playButton.isEnabled == false || pauseButton.isEnabled == false {
+            buttonState(true, pause: false, stop: false)
             audioPlayer.stop()
-            audioPlayer.currentTime = 0
-            currentTime.text = SharedVariable.Shared.convertNSTimeInterval2String(0)
-            
             
             progressTimer.invalidate()
+            
+            currentTime.text = SharedVariable.Shared.convertNSTimeInterval2String(0)
+            progressView.progress = 0
+            
+            
         }
         
     }
@@ -130,7 +143,6 @@ class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationCon
         }
         endTime.text = SharedVariable.Shared.convertNSTimeInterval2String(audioPlayer.duration)
         audioPlayer.delegate = self
-        audioPlayer.prepareToPlay()
         progressView.progress = 0
         audioPlayer.volume = 5.0
         

@@ -63,7 +63,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="cell" rowHeight="211" id="2wY-eP-nf1" customClass="WaitTableViewCell" customModule="recordingApp" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" tag="1" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="cell" rowHeight="211" id="2wY-eP-nf1" customClass="WaitTableViewCell" customModule="recordingApp" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="320" height="211"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="2wY-eP-nf1" id="OuC-oK-4jw">
@@ -129,6 +129,9 @@
                                                             <state key="normal" title="중지">
                                                                 <color key="titleShadowColor" red="0.4516175389289856" green="0.70342403650283813" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                             </state>
+                                                            <state key="disabled">
+                                                                <color key="titleColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                            </state>
                                                             <connections>
                                                                 <action selector="Buttontouched:" destination="2wY-eP-nf1" eventType="touchUpInside" id="xcC-V4-ZWG"/>
                                                             </connections>
@@ -140,6 +143,9 @@
                                                             </state>
                                                             <state key="disabled">
                                                                 <color key="titleColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                            </state>
+                                                            <state key="selected">
+                                                                <color key="titleColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                             </state>
                                                             <connections>
                                                                 <action selector="Buttontouched:" destination="2wY-eP-nf1" eventType="touchUpInside" id="WRL-or-GnN"/>
