@@ -11,7 +11,7 @@ import AVFoundation
 import FirebaseDatabase
 import FirebaseStorage
 
-class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationControllerDelegate {
+class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationControllerDelegate,UITabBarControllerDelegate {
     var progressTimer : Timer! // 타이머
     var ref:DatabaseReference! //실시간데이터 레퍼
     var storageRef: StorageReference! //스토리지 레퍼
@@ -20,8 +20,14 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
     var NameData: [String:String] = [:] // 데이터
     let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
     var valueList:[String:Int] = [:]
+    var yes: Int = 0
+    
+    protocol SendDataDelegate {
+        func sendData(data: String)
+    }
     
     
+    출처: https://zeddios.tistory.com/310 [ZeddiOS]
     
     
     
@@ -97,39 +103,37 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
         }
     }
     
-        
+   
     func findVacancy() -> Int{
-        ref.child("FileNames").observeSingleEvent(of: .value, with: {(snapshot) in
-            if let value = snapshot.value {
-                self.valueList = value as! [String : Int]
-                
-            }
-            
-            
-            
-        }
-        ){(error) in print(error.localizedDescription) }
         
-        var lists:[Int] = Array(self.valueList.values)
         var i = 0
+        var lists:[Int] = Array(self.valueList.values)
         while true {
-            if lists.firstIndex(of: i) == nil {
-                
-                break
-                
-            }else{
-                i = i+1
-            }
+                if lists.firstIndex(of: i) == nil {
+                    break
+                }else{
+                        i = i+1
+                }
+        
         }
         return i
+    }
+        
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    
+        let next = segue.destination as! UITabBarController
+        let nextController = next.viewControllers?[1] as! TableViewController
+        
+        nextController.value = valueList
     }
     
     func uploadProcess () {
         // File located on disk
-        let yes = findVacancy()
+        yes = findVacancy()
         let storage = Storage.storage()
           storageRef = storage.reference()
         ref.child("FileNames").updateChildValues(["recordFile\(yes)":yes])
+        self.valueList["recordFile\(yes)"] = yes
         
         
         // Create a reference to the file you want to upload
@@ -165,37 +169,12 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
     }
     
     func selectRecordAudiofile () -> Void {
-        
-        let database = Database.database()
-        ref = database.reference()
-        ref.child("FileNames").observeSingleEvent(of: .value, with: { (snapshot) in
-            // Get user value
-            let value = snapshot.value as? NSDictionary
-            
-            
-            // ...
-        }) { (error) in
-            print(error.localizedDescription)
-        }
-        
-        
             audioFile = documentDirectory.appendingPathComponent("recordFile.m4a")
-    
+
     }
     
     
-    
-    
-    
-    
-    
-    
-    
-        
-    
-    
-    
-    
+  
     
     
     func initPlay () {
@@ -206,7 +185,18 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
     }
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        let database = Database.database()
+        ref = database.reference()
+        ref.child("FileNames").observeSingleEvent(of: .value, with: {(snapshot) in
+            if let value = snapshot.value {
+                self.valueList = value as! [String : Int]
+                
+            }
+        }
+        ) { (error) in
+            print(error.localizedDescription)
+        }
+        tabBarController?.delegate = self
         
                 
             }

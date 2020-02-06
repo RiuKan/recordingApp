@@ -197,7 +197,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        downloadLists()
+        
         tableview.delegate = self
         tableview.dataSource = self
         
