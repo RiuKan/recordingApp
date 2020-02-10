@@ -22,12 +22,13 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
     var valueList:[String:Int] = [:]
     var yes: Int = 0
     
-    protocol SendDataDelegate {
-        func sendData(data: String)
+   
+    
+    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+       let tab = viewController as? TableViewController
+        tab?.value = self.valueList
     }
     
-    
-    출처: https://zeddios.tistory.com/310 [ZeddiOS]
     
     
     
