@@ -21,7 +21,8 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
     let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
     var valueList:[String:Int] = [:]
     var yes: Int = 0
-    
+    var completionHandler = {(value:[String:Int])->[String:Int] in return value}
+    var loadOn = false
    
     
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
@@ -184,23 +185,37 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
         prepareRecording()
         recordButton.isEnabled = true
     }
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    func loadFromFiewBase(completionHandler:@escaping (_ value: [String:Int]) ->[String:Int]){
+        
         let database = Database.database()
-        ref = database.reference()
-        ref.child("FileNames").observeSingleEvent(of: .value, with: {(snapshot) in
-            if let value = snapshot.value {
-                self.valueList = value as! [String : Int]
+        self.ref = database.reference()
+        self.ref.child("FileNames").observeSingleEvent(of: .value, with: {(snapshot) in
+            if let value = snapshot.value as? [String:Int] {
+                print("mid")
+                
+                self.valueList = completionHandler(value)
+                print("valueList")
+                self.loadOn = true
                 
             }
         }
         ) { (error) in
             print(error.localizedDescription)
         }
-        tabBarController?.delegate = self
         
-                
-            }
+    }
+    override func viewDidLoad() {
+        
+        
+        loadFromFiewBase(completionHandler:completionHandler )
+        
+    
+         repeat{
+            print("nil")
+        } while loadOn == false
+        self.tabBarController?.delegate = self
+        super.viewDidLoad()
+    }
     
     
     
