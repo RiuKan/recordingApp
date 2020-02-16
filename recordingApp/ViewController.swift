@@ -19,9 +19,8 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
     var audioFile : URL! // 주소
     var NameData: [String:String] = [:] // 데이터
     let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-    var valueList:[String:Int] = [:]
+    var valueList:[String:Int] = [:] 
     var yes: Int = 0
-    var completionHandler = {(value:[String:Int])->[String:Int] in return value}
     var loadOn = false
    
     
@@ -185,17 +184,17 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
         prepareRecording()
         recordButton.isEnabled = true
     }
-    func loadFromFiewBase(completionHandler:@escaping (_ value: [String:Int]) ->[String:Int]){
+    func loadFromFiewBase(completionHandler:@escaping () -> ()){
         
         let database = Database.database()
         self.ref = database.reference()
         self.ref.child("FileNames").observeSingleEvent(of: .value, with: {(snapshot) in
             if let value = snapshot.value as? [String:Int] {
                 print("mid")
-                
-                self.valueList = completionHandler(value)
+                self.valueList = value
+                completionHandler()
                 print("valueList")
-                self.loadOn = true
+                
                 
             }
         }
@@ -204,17 +203,20 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
         }
         
     }
+    
     override func viewDidLoad() {
         
         
-        loadFromFiewBase(completionHandler:completionHandler )
+        loadFromFiewBase( ){
+            
+            self.tabBarController?.delegate = self
+            super.viewDidLoad()
+            
+        }
         
     
-         repeat{
-            print("nil")
-        } while loadOn == false
-        self.tabBarController?.delegate = self
-        super.viewDidLoad()
+        
+        
     }
     
     

@@ -11,7 +11,9 @@ import FirebaseStorage
 import UIKit
 
 class TableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource{
-    var value:[String:Int]! = [:]
+    var value:[String:Int]! = [:] {didSet{
+        tableview.reloadData()
+        }}
     var ref:DatabaseReference!
     var selected : IndexPath!
     var clickNumber : Int = 0
@@ -19,6 +21,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     var pastCell : WaitTableViewCell!
     var status: [String:String] = ["cell":"wait","pastCell":"wait"]
     let cellIdentifier = "cell"
+    
     
  
     
