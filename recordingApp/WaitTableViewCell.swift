@@ -56,7 +56,7 @@ class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationCon
         self.downloadTask = refer.write(toFile: localURL)
         { url, error in
             if let error = error
-            {   SharedVariable.Shared.showToast("/(there is no file )",(self.window?.rootViewController!.view)!)
+            {   SharedVariable.Shared.showToast("there is no file ",(self.window?.rootViewController!.view)!)
             
             }
             else

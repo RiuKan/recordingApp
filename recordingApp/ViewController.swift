@@ -17,12 +17,23 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
     var storageRef: StorageReference! //스토리지 레퍼
     var audioRecorder: AVAudioRecorder! // 오디오 레코더 인스턴스
     var audioFile : URL! // 주소
-    var NameData: [String:String] = [:] // 데이터
+    
     let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-    var valueList:[String:Int] = [:] 
+    var valueList = Dictionary<String,Dictionary<String,String>>()
     var yes: Int = 0
     var loadOn = false
-   
+    let listMaking = { (list: Dictionary<String,Dictionary<String,String>>) -> [Int] in
+        var midlist: [Int] = []
+        for (key,value) in list {
+            let number: Int? = Int(value["번호"]!) // 왜 ?빼면 coercion문제 생기는거지?
+            if let number = number {
+           midlist.append(number)
+            }
+        }
+        return midlist
+    
+    }
+    
     
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
        let tab = viewController as? TableViewController
@@ -104,11 +115,11 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
         }
     }
     
-   
+   // 알고리즘 적용 예정
     func findVacancy() -> Int{
         
         var i = 0
-        var lists:[Int] = Array(self.valueList.values)
+        var lists:[Int] = listMaking(valueList)
         while true {
                 if lists.firstIndex(of: i) == nil {
                     break
@@ -131,14 +142,21 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
     func uploadProcess () {
         // File located on disk
         yes = findVacancy()
+        let date = Date()
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.weekday, .year,.month,.day], from: date)
+        
+        
         let storage = Storage.storage()
           storageRef = storage.reference()
-        ref.child("FileNames").updateChildValues(["recordFile\(yes)":yes])
-        self.valueList["recordFile\(yes)"] = yes
+        if let year = components.year, let month = components.month, let day = components.day, let weekday = components.date {
+            ref.child("FileNames").child("recordFile\(yes)").setValue(["날짜":"\(year).\(month).\(day)","요일":"\(weekday)","번호":"\(yes)"])
+        }
+        self.valueList["recordFile\(yes)"] = ["번호":"\(yes)"]
         
         
         // Create a reference to the file you want to upload
-        let riversRef = storageRef.child("Recordings/recordFile\(yes).m4a")
+        let riversRef = storageRef.child("Recordings/이전/recordFile\(yes).m4a")
         
         // Upload the file to the path "images/rivers.jpg"
         let uploadTask = riversRef.putFile(from: documentDirectory.appendingPathComponent("recordFile.m4a"), metadata: nil){ (metadata, error) in
@@ -184,16 +202,16 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
         prepareRecording()
         recordButton.isEnabled = true
     }
-    func loadFromFiewBase(completionHandler:@escaping () -> ()){
+    func loadFromFireBase(completionHandler:@escaping () -> ()){
         
         let database = Database.database()
         self.ref = database.reference()
         self.ref.child("FileNames").observeSingleEvent(of: .value, with: {(snapshot) in
-            if let value = snapshot.value as? [String:Int] {
-                print("mid")
+            if let value = snapshot.value as? Dictionary<String,Dictionary<String,String>> {
+                
                 self.valueList = value
                 completionHandler()
-                print("valueList")
+                
                 
                 
             }
@@ -207,7 +225,7 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
     override func viewDidLoad() {
         
         
-        loadFromFiewBase( ){
+        loadFromFireBase( ){
             
             self.tabBarController?.delegate = self
             super.viewDidLoad()

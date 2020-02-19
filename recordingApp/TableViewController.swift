@@ -11,7 +11,7 @@ import FirebaseStorage
 import UIKit
 
 class TableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource{
-    var value:[String:Int]! = [:] {didSet{
+    var value = Dictionary<String,Dictionary<String,String>>() {didSet{
         tableview.reloadData()
         }}
     var ref:DatabaseReference!
@@ -28,23 +28,13 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     @IBOutlet var tableview: UITableView!
     
     
-    func downloadLists () {
-        let database = Database.database()
-       ref = database.reference()
-        ref.child("FileNames").observeSingleEvent(of: .value, with: { (snapshot) in
-            // Get user value
-            if let values = snapshot.value {
-            self.value = values as? [String:Int]
-            }
+   
             // optioal any 로 오게 되는데, 이것을 깨서
             // 넣어 줘야 한다.
             
             
             // ...
-        }) { (error) in
-            print(error.localizedDescription)
-        }
-    }
+    
     func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
         return 1
@@ -113,14 +103,18 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     {   if indexPath.row == selected?.row {
         let cell =  tableview.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! WaitTableViewCell
         visibleChange("select", cell,"cell")
-        cell.fileName?.text = Array(value.keys)[indexPath.row]
+        let Name = Array(value.keys)[indexPath.row]
+        cell.fileName?.text = Name
+        cell.fileDate?.text = value[Name]!["날짜"]
         // 특정 cell만 바꾼 cell 을 내놔야 하는데 
         return cell
     }else{
         let cell = tableview.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! WaitTableViewCell
         visibleChange("wait", cell,"cell")
         status["cell"] = "select"
-        cell.fileName?.text = Array(value.keys)[indexPath.row]
+        let Name = Array(value.keys)[indexPath.row]
+        cell.fileNameWait?.text = Array(value.keys)[indexPath.row]
+        cell.fileDateWait?.text = value[Name]!["날짜"]
         
         return cell
         }
@@ -171,31 +165,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         }
     }
 
-//        if status["cell"] == "wait"{
-//        let cell = tableview.cellForRow(at: indexPath) as! WaitTableViewCell
-//
-//        visibleChange("select", cell,"cell")
-//        }
-        
-//        else if clickNumber == 1 {
-//            if selected.row != indexPath.row{
-//            let pastCell = tableview.cellForRow(at: selected) as! WaitTableViewCell?
-//
-//            if pastCell != nil, let pastCell = pastCell
-//            {
-//            visibleChange("wait", pastCell,"pastCell")
-//
-//            }
-//            }else {
-//                if status["cell"] == "select" {
-//                    let cell = tableview.cellForRow(at: indexPath) as! WaitTableViewCell
-//
-//                    visibleChange("wait", cell, "cell")
-//
-//
-//            }
-//            selected = indexPath
-        
+
     
     override func viewDidLoad()
     {
