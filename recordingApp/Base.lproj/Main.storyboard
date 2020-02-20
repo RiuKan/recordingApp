@@ -79,20 +79,8 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="날짜" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rWW-af-Pb0">
-                                                    <rect key="frame" x="278" y="29" width="30" height="40"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="파일명" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Guq-he-tLN">
-                                                    <rect key="frame" x="15" y="28" width="109" height="40"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=" 날짜" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ca5-SP-2cc">
-                                                    <rect key="frame" x="136" y="108" width="34" height="13"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="날짜" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rWW-af-Pb0">
+                                                    <rect key="frame" x="213" y="29" width="95" height="40"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -104,7 +92,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="파일명" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="h1r-gR-zpm">
-                                                    <rect key="frame" x="15" y="109" width="89" height="12"/>
+                                                    <rect key="frame" x="15" y="105" width="117" height="21"/>
                                                     <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -153,48 +141,59 @@
                                                         </button>
                                                     </subviews>
                                                 </stackView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DQf-tL-ySt">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DQf-tL-ySt">
                                                     <rect key="frame" x="229" y="100" width="74" height="60"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=" 날짜" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="Ca5-SP-2cc">
+                                                    <rect key="frame" x="115" y="100" width="90" height="31"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="RU9-nh-uNT">
+                                                    <rect key="frame" x="15" y="34" width="97" height="30"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <nil key="textColor"/>
+                                                    <textInputTraits key="textInputTraits"/>
+                                                    <connections>
+                                                        <action selector="filenameChange:" destination="2wY-eP-nf1" eventType="valueChanged" id="vie-CQ-nbU"/>
+                                                    </connections>
+                                                </textField>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="Yth-2F-7K7" firstAttribute="top" secondItem="OuC-oK-4jw" secondAttribute="top" constant="114" id="1su-vM-Wng"/>
-                                                <constraint firstAttribute="bottomMargin" secondItem="Guq-he-tLN" secondAttribute="bottom" constant="132" id="2Yl-cN-jm2"/>
                                                 <constraint firstItem="92n-Rk-iJl" firstAttribute="top" secondItem="OuC-oK-4jw" secondAttribute="topMargin" constant="89" id="4s7-sG-UAK"/>
-                                                <constraint firstAttribute="bottomMargin" secondItem="Ca5-SP-2cc" secondAttribute="bottom" constant="79" id="4zY-j0-l3j"/>
-                                                <constraint firstAttribute="trailingMargin" secondItem="Guq-he-tLN" secondAttribute="trailing" constant="181" id="5ar-wE-dYC"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="h1r-gR-zpm" secondAttribute="bottom" constant="74" id="5Mf-Xg-060"/>
                                                 <constraint firstItem="WtC-D2-7fK" firstAttribute="top" secondItem="OuC-oK-4jw" secondAttribute="topMargin" constant="147" id="75t-RG-1YH"/>
                                                 <constraint firstAttribute="bottom" secondItem="rWW-af-Pb0" secondAttribute="bottom" constant="141.5" id="9Bd-43-jOD"/>
                                                 <constraint firstAttribute="trailingMargin" secondItem="DQf-tL-ySt" secondAttribute="trailing" constant="2" id="Cmo-5g-3Bt"/>
+                                                <constraint firstItem="Ca5-SP-2cc" firstAttribute="leading" secondItem="OuC-oK-4jw" secondAttribute="leadingMargin" constant="100" id="Cuc-LW-HKA"/>
                                                 <constraint firstAttribute="trailing" secondItem="9iT-Xa-hiF" secondAttribute="trailing" constant="12" id="DWE-yP-Ws1"/>
+                                                <constraint firstItem="h1r-gR-zpm" firstAttribute="top" secondItem="OuC-oK-4jw" secondAttribute="topMargin" constant="94" id="Djv-Ff-mJT"/>
                                                 <constraint firstItem="9iT-Xa-hiF" firstAttribute="top" secondItem="OuC-oK-4jw" secondAttribute="top" constant="104" id="EhZ-xk-TFM"/>
                                                 <constraint firstAttribute="trailing" secondItem="Yth-2F-7K7" secondAttribute="trailing" constant="12" id="FT6-mw-qnU"/>
-                                                <constraint firstItem="Guq-he-tLN" firstAttribute="top" secondItem="OuC-oK-4jw" secondAttribute="topMargin" constant="17" id="I1V-0z-PMG"/>
                                                 <constraint firstAttribute="trailingMargin" secondItem="92n-Rk-iJl" secondAttribute="trailing" constant="208" id="J9S-b3-ijO"/>
                                                 <constraint firstAttribute="bottom" secondItem="Yth-2F-7K7" secondAttribute="bottom" constant="94.5" id="Kwf-hz-hBS"/>
                                                 <constraint firstAttribute="bottomMargin" secondItem="92n-Rk-iJl" secondAttribute="bottom" constant="40" id="NF1-FC-X51"/>
                                                 <constraint firstItem="92n-Rk-iJl" firstAttribute="leading" secondItem="OuC-oK-4jw" secondAttribute="leadingMargin" id="O2Z-UL-wVH"/>
+                                                <constraint firstItem="Ca5-SP-2cc" firstAttribute="top" secondItem="OuC-oK-4jw" secondAttribute="topMargin" constant="89" id="Oom-IN-A8Z"/>
                                                 <constraint firstAttribute="trailing" secondItem="rWW-af-Pb0" secondAttribute="trailing" constant="12" id="Rae-Io-e5l"/>
-                                                <constraint firstItem="Ca5-SP-2cc" firstAttribute="top" secondItem="OuC-oK-4jw" secondAttribute="topMargin" constant="97" id="SLi-hP-fOR"/>
                                                 <constraint firstItem="DQf-tL-ySt" firstAttribute="top" secondItem="OuC-oK-4jw" secondAttribute="topMargin" constant="89" id="TZf-hU-DhC"/>
-                                                <constraint firstItem="h1r-gR-zpm" firstAttribute="leading" secondItem="OuC-oK-4jw" secondAttribute="leadingMargin" id="TtL-HC-dNO"/>
                                                 <constraint firstItem="DQf-tL-ySt" firstAttribute="leading" secondItem="OuC-oK-4jw" secondAttribute="leadingMargin" constant="214" id="Yef-l2-ELH"/>
                                                 <constraint firstAttribute="bottom" secondItem="9iT-Xa-hiF" secondAttribute="bottom" constant="84.5" id="YxP-Zz-4Xh"/>
                                                 <constraint firstItem="rWW-af-Pb0" firstAttribute="top" secondItem="OuC-oK-4jw" secondAttribute="top" constant="29" id="bgi-IT-GAT"/>
-                                                <constraint firstItem="rWW-af-Pb0" firstAttribute="leading" secondItem="OuC-oK-4jw" secondAttribute="leading" constant="278" id="c4r-8r-fbl"/>
-                                                <constraint firstAttribute="trailingMargin" secondItem="h1r-gR-zpm" secondAttribute="trailing" constant="201" id="dHl-qt-H07"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="h1r-gR-zpm" secondAttribute="trailing" constant="173" id="cIE-8Q-d6m"/>
                                                 <constraint firstItem="WtC-D2-7fK" firstAttribute="leading" secondItem="OuC-oK-4jw" secondAttribute="leadingMargin" constant="48" id="dau-ap-UY7"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="Ca5-SP-2cc" secondAttribute="trailing" constant="100" id="e9M-we-2Iq"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="Ca5-SP-2cc" secondAttribute="bottom" constant="69" id="f1m-qP-hhg"/>
                                                 <constraint firstAttribute="bottomMargin" secondItem="DQf-tL-ySt" secondAttribute="bottom" constant="40" id="icZ-ga-SSv"/>
-                                                <constraint firstItem="Ca5-SP-2cc" firstAttribute="leading" secondItem="OuC-oK-4jw" secondAttribute="leadingMargin" constant="121" id="kpj-AB-W6J"/>
-                                                <constraint firstItem="Guq-he-tLN" firstAttribute="leading" secondItem="OuC-oK-4jw" secondAttribute="leadingMargin" id="m0I-cd-hDO"/>
-                                                <constraint firstItem="h1r-gR-zpm" firstAttribute="top" secondItem="OuC-oK-4jw" secondAttribute="topMargin" constant="98" id="mXN-Oc-L9t"/>
+                                                <constraint firstItem="rWW-af-Pb0" firstAttribute="leading" secondItem="OuC-oK-4jw" secondAttribute="leading" constant="213" id="ihg-nl-8Lv"/>
+                                                <constraint firstItem="h1r-gR-zpm" firstAttribute="leading" secondItem="OuC-oK-4jw" secondAttribute="leadingMargin" id="mEe-3C-DaK"/>
                                                 <constraint firstAttribute="bottomMargin" secondItem="WtC-D2-7fK" secondAttribute="bottom" constant="12" id="qs3-ks-zlw"/>
                                                 <constraint firstItem="9iT-Xa-hiF" firstAttribute="leading" secondItem="OuC-oK-4jw" secondAttribute="leading" constant="236" id="r5v-ku-dJ8"/>
-                                                <constraint firstAttribute="trailingMargin" secondItem="Ca5-SP-2cc" secondAttribute="trailing" constant="135" id="rdY-Ex-dg6"/>
-                                                <constraint firstAttribute="bottomMargin" secondItem="h1r-gR-zpm" secondAttribute="bottom" constant="79" id="uhB-rj-UXR"/>
                                                 <constraint firstItem="Yth-2F-7K7" firstAttribute="leading" secondItem="OuC-oK-4jw" secondAttribute="leading" constant="15" id="xbi-Ft-jwg"/>
                                                 <constraint firstAttribute="trailingMargin" secondItem="WtC-D2-7fK" secondAttribute="trailing" constant="48" id="yIq-K3-gjJ"/>
                                             </constraints>
@@ -204,7 +203,7 @@
                                             <outlet property="endTime" destination="DQf-tL-ySt" id="bbe-ET-u7q"/>
                                             <outlet property="fileDate" destination="rWW-af-Pb0" id="ZRj-Ib-1ya"/>
                                             <outlet property="fileDateWait" destination="Ca5-SP-2cc" id="8hR-I0-81C"/>
-                                            <outlet property="fileName" destination="Guq-he-tLN" id="alI-hW-uAu"/>
+                                            <outlet property="fileName" destination="RU9-nh-uNT" id="epp-9t-rCk"/>
                                             <outlet property="fileNameWait" destination="h1r-gR-zpm" id="bmi-Lk-J4E"/>
                                             <outlet property="filePlayTimeWait" destination="9iT-Xa-hiF" id="NI3-GK-b3I"/>
                                             <outlet property="pauseButton" destination="Jwy-ak-ykE" id="66X-lY-am3"/>

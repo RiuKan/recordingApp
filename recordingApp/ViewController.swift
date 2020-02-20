@@ -17,11 +17,11 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
     var storageRef: StorageReference! //스토리지 레퍼
     var audioRecorder: AVAudioRecorder! // 오디오 레코더 인스턴스
     var audioFile : URL! // 주소
-    
+    let list: [Int:String] = [1:"일요일",2:"월요일",3:"화요일",4:"수요일",5:"목요일",6:"금요일",7:"토요일"]
     let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
     var valueList = Dictionary<String,Dictionary<String,String>>()
     var yes: Int = 0
-    var loadOn = false
+    var playTime: String!
     let listMaking = { (list: Dictionary<String,Dictionary<String,String>>) -> [Int] in
         var midlist: [Int] = []
         for (key,value) in list {
@@ -108,8 +108,10 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
         } else if sender.titleLabel!.text == "⬛️" {
             
             progressTimer.invalidate()
+            playTime = SharedVariable.Shared.convertNSTimeInterval2String(audioRecorder.currentTime)
             audioRecorder.stop()
             recordButton.setTitle("🔴", for : UIControl.State())
+            
             uploadProcess()
             
         }
@@ -119,7 +121,7 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
     func findVacancy() -> Int{
         
         var i = 0
-        var lists:[Int] = listMaking(valueList)
+        let lists:[Int] = listMaking(valueList)
         while true {
                 if lists.firstIndex(of: i) == nil {
                     break
@@ -149,10 +151,22 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
         
         let storage = Storage.storage()
           storageRef = storage.reference()
-        if let year = components.year, let month = components.month, let day = components.day, let weekday = components.date {
-            ref.child("FileNames").child("recordFile\(yes)").setValue(["날짜":"\(year).\(month).\(day)","요일":"\(weekday)","번호":"\(yes)"])
+        
+        
+        if let year = components.year, let month = components.month, let day = components.day, let weekday = components.weekday, let dayOfWeek = list[weekday], let playTime = playTime{ self.ref.child("FileNames/recordFile\(yes)").updateChildValues(["날짜":"\(year).\(month).\(day)","요일": dayOfWeek,"번호":"\(yes)","재생시간":"\(playTime)"
+            ], withCompletionBlock: { (Error:Error?, DatabaseReference:DatabaseReference) in
+                print(Error)
+            }) // if let 에서 nil 값을 넣으면  error 도 안뜨고 안넣어짐 if let 을 안 들어오는 듯
+            
+            
+            
+            self.valueList["recordFile\(yes)"] = ["날짜":"\(year).\(month).\(day)","요일": dayOfWeek,"번호":"\(yes)","재생시간":"\(playTime)"]
         }
-        self.valueList["recordFile\(yes)"] = ["번호":"\(yes)"]
+            
+            
+            
+        
+        
         
         
         // Create a reference to the file you want to upload
@@ -231,6 +245,7 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
             super.viewDidLoad()
             
         }
+        
         
     
         

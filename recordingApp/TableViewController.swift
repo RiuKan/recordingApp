@@ -9,8 +9,11 @@
 import FirebaseDatabase
 import FirebaseStorage
 import UIKit
-
+protocol SenddataDelegate {
+    func sendData(data1:Int,data2:Dictionary<String,Dictionary<String,String>>,data3:UITableView)
+}
 class TableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource{
+    var delegate: SenddataDelegate?
     var value = Dictionary<String,Dictionary<String,String>>() {didSet{
         tableview.reloadData()
         }}
@@ -20,6 +23,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     var cell : WaitTableViewCell!
     var pastCell : WaitTableViewCell!
     var status: [String:String] = ["cell":"wait","pastCell":"wait"]
+    var row: Int!
     let cellIdentifier = "cell"
     
     
@@ -103,9 +107,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     {   if indexPath.row == selected?.row {
         let cell =  tableview.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! WaitTableViewCell
         visibleChange("select", cell,"cell")
-        let Name = Array(value.keys)[indexPath.row]
-        cell.fileName?.text = Name
-        cell.fileDate?.text = value[Name]!["날짜"]
+        
         // 특정 cell만 바꾼 cell 을 내놔야 하는데 
         return cell
     }else{
@@ -115,6 +117,10 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         let Name = Array(value.keys)[indexPath.row]
         cell.fileNameWait?.text = Array(value.keys)[indexPath.row]
         cell.fileDateWait?.text = value[Name]!["날짜"]
+        cell.fileName?.text = Name
+        cell.fileDate?.text = value[Name]!["날짜"]
+        cell.filePlayTimeWait?.text = value[Name]!["재생시간"]
+        cell.endTime?.text = value[Name]!["재생시간"]
         
         return cell
         }
@@ -125,7 +131,8 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
    
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
-    {
+    {   delegate?.sendData(data1: row,data2: value,data3:tableview)
+        
         tableview.deselectRow(at: indexPath, animated: false)
         if clickNumber == 0
         {

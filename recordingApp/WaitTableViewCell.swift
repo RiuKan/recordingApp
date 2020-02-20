@@ -10,16 +10,20 @@ import UIKit
 import AVFoundation
 import FirebaseDatabase
 import FirebaseStorage
-
-class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationControllerDelegate {
+protocol sendData {
+    func senddata (_ data1:Dictionary<String, Dictionary<String, String>>)
+}
+class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationControllerDelegate,SenddataDelegate {
     var progressTimer : Timer!
     var audioPlayer: AVAudioPlayer!
     let maxVolume: Float = 10.0
     var ref: DatabaseReference!
     var repeater: Int = 0
     var downloadTask: StorageDownloadTask!
-   
+    var row: Int!
     let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+    var valueLast = Dictionary<String, Dictionary<String, String>>()
+    var tableview: UITableView!
     // 실행 ui
     @IBOutlet weak var progressView: UIProgressView!
     @IBOutlet weak var playButton: UIButton!
@@ -30,14 +34,23 @@ class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationCon
     
     
     @IBOutlet weak var fileDate: UILabel!
-    @IBOutlet weak var fileName: UILabel!
+    @IBOutlet weak var fileName: UITextField!
     
     @IBOutlet weak var fileNameWait: UILabel!
     @IBOutlet weak var fileDateWait: UILabel!
     @IBOutlet weak var filePlayTimeWait: UILabel!
     
-    
-    
+    @IBAction func filenameChange (_ sender:UITextField) {
+           var name  = fileName.text
+        
+           ref.setValue(<#T##value: Any?##Any?#>) // 여기 valueLast.keys만 변수 따로 담아주면 네임 바꿀때마다 따로 해줄 필요 없을듯
+    }
+    func sendData(data1: Int, data2: Dictionary<String, Dictionary<String, String>>,data3: UITableView) {
+        row = data1
+        valueLast = data2
+        tableview = data3
+        
+    }
    
     
     var audioFile : URL!
@@ -83,7 +96,7 @@ class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationCon
             {
             let stor = Storage.storage()
             let storef = stor.reference()
-            let islandRef = storef.child("Recordings/\(file).m4a")
+            let islandRef = storef.child("Recordings/이전/\(file).m4a")
             
             
             

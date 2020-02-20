@@ -12,7 +12,6 @@ class SharedVariable:NSObject  {
     static let Shared = SharedVariable()
     
     var nameOfFile: String!
-    var valueList = Dictionary<String,Dictionary<String,String>>()
     
     func showToast(_ message : String,_ view: UIView) {
         let width_variable:CGFloat = 10
@@ -60,6 +59,6 @@ class SharedVariable:NSObject  {
      
     }
 
-
+    
     
 }
