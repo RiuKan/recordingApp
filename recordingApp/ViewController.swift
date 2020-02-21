@@ -10,8 +10,11 @@ import UIKit
 import AVFoundation
 import FirebaseDatabase
 import FirebaseStorage
-
+protocol Send {
+    func send(data1:Dictionary<String,Dictionary<String,String>>)
+}
 class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationControllerDelegate,UITabBarControllerDelegate {
+    var delegate: Send?
     var progressTimer : Timer! // 타이머
     var ref:DatabaseReference! //실시간데이터 레퍼
     var storageRef: StorageReference! //스토리지 레퍼
@@ -19,7 +22,9 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
     var audioFile : URL! // 주소
     let list: [Int:String] = [1:"일요일",2:"월요일",3:"화요일",4:"수요일",5:"목요일",6:"금요일",7:"토요일"]
     let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-    var valueList = Dictionary<String,Dictionary<String,String>>()
+    var valueList = Dictionary<String,Dictionary<String,String>>() {didSet{
+        delegate?.send(data1: self.valueList)
+        }}
     var yes: Int = 0
     var playTime: String!
     let listMaking = { (list: Dictionary<String,Dictionary<String,String>>) -> [Int] in
@@ -35,11 +40,11 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
     }
     
     
+    
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
-       let tab = viewController as? TableViewController
+        let tab = viewController as? TableViewController
         tab?.value = self.valueList
     }
-    
     
     
     
@@ -151,16 +156,17 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
         
         let storage = Storage.storage()
           storageRef = storage.reference()
+        let key = ref.child("FileNames").childByAutoId().key
         
         
-        if let year = components.year, let month = components.month, let day = components.day, let weekday = components.weekday, let dayOfWeek = list[weekday], let playTime = playTime{ self.ref.child("FileNames/recordFile\(yes)").updateChildValues(["날짜":"\(year).\(month).\(day)","요일": dayOfWeek,"번호":"\(yes)","재생시간":"\(playTime)"
+        if let year = components.year, let month = components.month, let day = components.day, let weekday = components.weekday, let dayOfWeek = list[weekday], let playTime = playTime, let key = key{ self.ref.child("FileNames/\(key)").updateChildValues(["날짜":"\(year).\(month).\(day)","요일": dayOfWeek,"번호":"\(yes)","재생시간":"\(playTime)","파일이름":"recordFile\(yes)"
             ], withCompletionBlock: { (Error:Error?, DatabaseReference:DatabaseReference) in
                 print(Error)
             }) // if let 에서 nil 값을 넣으면  error 도 안뜨고 안넣어짐 if let 을 안 들어오는 듯
             
             
             
-            self.valueList["recordFile\(yes)"] = ["날짜":"\(year).\(month).\(day)","요일": dayOfWeek,"번호":"\(yes)","재생시간":"\(playTime)"]
+            self.valueList[key] = ["날짜":"\(year).\(month).\(day)","요일": dayOfWeek,"번호":"\(yes)","재생시간":"\(playTime)","파일이름":"recordFile\(yes)"]
         }
             
             

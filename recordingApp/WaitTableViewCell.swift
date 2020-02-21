@@ -14,6 +14,7 @@ protocol sendData {
     func senddata (_ data1:Dictionary<String, Dictionary<String, String>>)
 }
 class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationControllerDelegate,SenddataDelegate {
+    var delegate: sendData?
     var progressTimer : Timer!
     var audioPlayer: AVAudioPlayer!
     let maxVolume: Float = 10.0
@@ -24,6 +25,8 @@ class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationCon
     let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
     var valueLast = Dictionary<String, Dictionary<String, String>>()
     var tableview: UITableView!
+    var nameRecieve: Array<String>!
+    
     // 실행 ui
     @IBOutlet weak var progressView: UIProgressView!
     @IBOutlet weak var playButton: UIButton!
@@ -41,14 +44,22 @@ class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationCon
     @IBOutlet weak var filePlayTimeWait: UILabel!
     
     @IBAction func filenameChange (_ sender:UITextField) {
-           var name  = fileName.text
-        
-           ref.setValue(<#T##value: Any?##Any?#>) // 여기 valueLast.keys만 변수 따로 담아주면 네임 바꿀때마다 따로 해줄 필요 없을듯
+        let name  = fileName.text
+        let id = nameRecieve[row]
+        if let name = name { ref.child("FileNames").child("\(id)").child("파일이름").setValue("\(name)",withCompletionBlock:{ (Error:Error?, DatabaseReference:DatabaseReference) in
+            
+            })
+            valueLast[id]!["파일이름"] = name
+        }
+        delegate?.senddata(valueLast)
+           // 여기 valueLast.keys만 변수 따로 담아주면 네임 바꿀때마다 따로 해줄 필요 없을듯
     }
-    func sendData(data1: Int, data2: Dictionary<String, Dictionary<String, String>>,data3: UITableView) {
+    func sendData(data1: Int, data2: Dictionary<String, Dictionary<String, String>>,data3: UITableView,data4:Array<String>) {
         row = data1
         valueLast = data2
         tableview = data3
+        nameRecieve = data4
+        
         
     }
    
@@ -168,7 +179,11 @@ class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationCon
         
     }
     override func awakeFromNib() {
+        
+    
         super.awakeFromNib()
+        
+        
         
     }
 
@@ -177,5 +192,5 @@ class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationCon
         
         
     }
-
+    
 }

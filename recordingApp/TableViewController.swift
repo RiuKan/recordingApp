@@ -10,9 +10,9 @@ import FirebaseDatabase
 import FirebaseStorage
 import UIKit
 protocol SenddataDelegate {
-    func sendData(data1:Int,data2:Dictionary<String,Dictionary<String,String>>,data3:UITableView)
+    func sendData(data1:Int,data2:Dictionary<String,Dictionary<String,String>>,data3:UITableView,data4:Array<String>)
 }
-class TableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource{
+class TableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource,sendData,Send{
     var delegate: SenddataDelegate?
     var value = Dictionary<String,Dictionary<String,String>>() {didSet{
         tableview.reloadData()
@@ -25,7 +25,8 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     var status: [String:String] = ["cell":"wait","pastCell":"wait"]
     var row: Int!
     let cellIdentifier = "cell"
-    
+    var nameReciever: Array<String>!
+    var refreshcontrol = UIRefreshControl()
     
  
     
@@ -36,9 +37,13 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
             // optioal any 로 오게 되는데, 이것을 깨서
             // 넣어 줘야 한다.
             
-            
+    func send(data1: Dictionary<String, Dictionary<String, String>>) {
+        value = data1
+    }
             // ...
-    
+    func senddata(_ data1: Dictionary<String, Dictionary<String, String>>) {
+        value = data1
+    }
     func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
         return 1
@@ -108,20 +113,24 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         let cell =  tableview.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! WaitTableViewCell
         visibleChange("select", cell,"cell")
         
+        self.delegate = cell
+        cell.delegate = self
         // 특정 cell만 바꾼 cell 을 내놔야 하는데 
         return cell
     }else{
         let cell = tableview.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! WaitTableViewCell
         visibleChange("wait", cell,"cell")
         status["cell"] = "select"
-        let Name = Array(value.keys)[indexPath.row]
-        cell.fileNameWait?.text = Array(value.keys)[indexPath.row]
-        cell.fileDateWait?.text = value[Name]!["날짜"]
-        cell.fileName?.text = Name
-        cell.fileDate?.text = value[Name]!["날짜"]
-        cell.filePlayTimeWait?.text = value[Name]!["재생시간"]
-        cell.endTime?.text = value[Name]!["재생시간"]
-        
+        nameReciever = Array(value.keys)
+        let name = nameReciever[indexPath.row]
+        cell.fileNameWait?.text = value[name]!["파일이름"]
+        cell.fileDateWait?.text = value[name]!["날짜"]
+        cell.fileName?.text = value[name]!["파일이름"]
+        cell.fileDate?.text = value[name]!["날짜"]
+        cell.filePlayTimeWait?.text = value[name]!["재생시간"]
+        cell.endTime?.text = value[name]!["재생시간"]
+        self.delegate = cell
+        cell.delegate = self
         return cell
         }
         
@@ -131,7 +140,9 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
    
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
-    {   delegate?.sendData(data1: row,data2: value,data3:tableview)
+        
+    {   row = indexPath.row
+        delegate?.sendData(data1: row,data2: value,data3:tableview,data4:nameReciever)
         
         tableview.deselectRow(at: indexPath, animated: false)
         if clickNumber == 0
@@ -152,35 +163,43 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
                         visibleChange("select", cell, "cell")
                         SharedVariable.Shared.nameOfFile = cell.fileName?.text
                         let pastCell = tableview.cellForRow(at: selected) as! WaitTableViewCell?
-                            if pastCell != nil, let pastCell = pastCell
-                            {
-                                visibleChange("wait", pastCell, "pastCell")
-                                
-                            }
+//                        if pastCell != nil, let pastCell = pastCell
+//                        {
+//                            visibleChange("wait", pastCell, "pastCell")
+//
+//                        }
                         if indexPath.row == selected.row {
                             clickNumber = 0
                         }
                         selected = indexPath
-                }
-                else
-                {
-                    let cell = tableview.cellForRow(at: indexPath) as! WaitTableViewCell
+            }
+//            } else
+//            {
+//                let cell = tableview.cellForRow(at: indexPath) as! WaitTableViewCell
+//
+//                visibleChange("wait", cell, "cell")
+//
+//            }  다시 클릭시 동일한 것이 꺼지도록 하는거
             
-                    visibleChange("wait", cell, "cell")
-                    
-                }
         }
     }
 
-
+    @objc func refresh(){
+        tableview.reloadData()
+        refreshcontrol.endRefreshing()
+    }
     
     override func viewDidLoad()
     {
         super.viewDidLoad()
+        let view = self.tabBarController?.viewControllers![0] as! ViewController
+        
+        view.delegate = self
         
         tableview.delegate = self
         tableview.dataSource = self
-        
+        tableview.refreshControl = refreshcontrol
+        refreshcontrol.addTarget(self, action: #selector(refresh), for: .valueChanged)
         
     }
     override func viewWillAppear(_ animated: Bool)

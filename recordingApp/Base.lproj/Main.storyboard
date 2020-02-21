@@ -153,13 +153,14 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="RU9-nh-uNT">
+                                                <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="RU9-nh-uNT">
                                                     <rect key="frame" x="15" y="34" width="97" height="30"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <nil key="textColor"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                                     <textInputTraits key="textInputTraits"/>
                                                     <connections>
-                                                        <action selector="filenameChange:" destination="2wY-eP-nf1" eventType="valueChanged" id="vie-CQ-nbU"/>
+                                                        <action selector="filenameChange:" destination="2wY-eP-nf1" eventType="editingDidEndOnExit" id="A89-Wz-e57"/>
                                                     </connections>
                                                 </textField>
                                             </subviews>
