@@ -176,7 +176,7 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
         
         
         // Create a reference to the file you want to upload
-        let riversRef = storageRef.child("Recordings/이전/recordFile\(yes).m4a")
+        let riversRef = storageRef.child("Recordings/이전/\(key).m4a")
         
         // Upload the file to the path "images/rivers.jpg"
         let uploadTask = riversRef.putFile(from: documentDirectory.appendingPathComponent("recordFile.m4a"), metadata: nil){ (metadata, error) in

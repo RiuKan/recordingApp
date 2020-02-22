@@ -13,19 +13,18 @@ import FirebaseStorage
 protocol sendData {
     func senddata (_ data1:Dictionary<String, Dictionary<String, String>>)
 }
-class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationControllerDelegate,SenddataDelegate {
-    var delegate: sendData?
+class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationControllerDelegate {
+    
+    var delegate: sendData? = nil
     var progressTimer : Timer!
     var audioPlayer: AVAudioPlayer!
     let maxVolume: Float = 10.0
     var ref: DatabaseReference!
     var repeater: Int = 0
     var downloadTask: StorageDownloadTask!
-    var row: Int!
+    
     let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-    var valueLast = Dictionary<String, Dictionary<String, String>>()
-    var tableview: UITableView!
-    var nameRecieve: Array<String>!
+    
     
     // 실행 ui
     @IBOutlet weak var progressView: UIProgressView!
@@ -34,7 +33,7 @@ class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationCon
     @IBOutlet weak var currentTime: UILabel!
     @IBOutlet weak var endTime: UILabel!
     @IBOutlet weak var stopButton: UIButton!
-    
+    @IBOutlet weak var hideKey: UILabel!
     
     @IBOutlet weak var fileDate: UILabel!
     @IBOutlet weak var fileName: UITextField!
@@ -45,24 +44,18 @@ class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationCon
     
     @IBAction func filenameChange (_ sender:UITextField) {
         let name  = fileName.text
-        let id = nameRecieve[row]
-        if let name = name { ref.child("FileNames").child("\(id)").child("파일이름").setValue("\(name)",withCompletionBlock:{ (Error:Error?, DatabaseReference:DatabaseReference) in
-            
-            })
-            valueLast[id]!["파일이름"] = name
+        
+        let id = SharedVariable.Shared.nameRecieve[SharedVariable.Shared.row]
+        if let name = name {
+           ref = Database.database().reference()
+            ref.child("FileNames").child("\(id)").child("파일이름").setValue("\(name)")
+            SharedVariable.Shared.valueLast[id]!["파일이름"] = name
         }
-        delegate?.senddata(valueLast)
+        delegate?.senddata(SharedVariable.Shared.valueLast)
            // 여기 valueLast.keys만 변수 따로 담아주면 네임 바꿀때마다 따로 해줄 필요 없을듯
     }
-    func sendData(data1: Int, data2: Dictionary<String, Dictionary<String, String>>,data3: UITableView,data4:Array<String>) {
-        row = data1
-        valueLast = data2
-        tableview = data3
-        nameRecieve = data4
-        
-        
-    }
-   
+    
+   // 프로토콜로 못 불러왔음 자꾸 값을 넣었는데, 프로토콜끝나면 nil이 되버림.
     
     var audioFile : URL!
     let timePlayerSelector:Selector = #selector(WaitTableViewCell.updatePlayTime)
@@ -102,33 +95,32 @@ class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationCon
                 
             }
             else {
-                
-            if let file = SharedVariable.Shared.nameOfFile
-            {
-            let stor = Storage.storage()
-            let storef = stor.reference()
-            let islandRef = storef.child("Recordings/이전/\(file).m4a")
+                let file: String! = hideKey.text
+                        let stor = Storage.storage()
+                        let storef = stor.reference()
+                        let islandRef = storef.child("Recordings/이전/\(file).m4a")
+                        
+                        
+                        
+                        let localURL = documentDirectory.appendingPathComponent("\(file).m4a")
+                        
+                        
+                        update(islandRef,localURL)
+                        
+                        
+                        
+                        let observer = downloadTask.observe(.success) { snapshot in
+                            
+                            
+                            
+                            self.audioFile = localURL
+                            self.preparePlay()
+                            self.audioPlayer.play()
+                            self.buttonState(false, pause: true, stop: true)
+                            self.progressTimer = Timer.scheduledTimer(timeInterval: 0.01, target: self, selector: self.timePlayerSelector, userInfo: nil, repeats: true)
+                        
+                }
             
-            
-            
-            let localURL = documentDirectory.appendingPathComponent("\(file).m4a")
-            
-                
-                update(islandRef,localURL)
-            
-                
-            
-            let observer = downloadTask.observe(.success) { snapshot in
-                
-                    
-                    
-                    self.audioFile = localURL
-                    self.preparePlay()
-                    self.audioPlayer.play()
-                self.buttonState(false, pause: true, stop: true)
-                    self.progressTimer = Timer.scheduledTimer(timeInterval: 0.01, target: self, selector: self.timePlayerSelector, userInfo: nil, repeats: true)
-                       }
-            }
             }
             
             

@@ -9,11 +9,11 @@
 import FirebaseDatabase
 import FirebaseStorage
 import UIKit
-protocol SenddataDelegate {
+protocol SenddataDelegate: class {
     func sendData(data1:Int,data2:Dictionary<String,Dictionary<String,String>>,data3:UITableView,data4:Array<String>)
 }
 class TableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource,sendData,Send{
-    var delegate: SenddataDelegate?
+    weak var delegate: SenddataDelegate?
     var value = Dictionary<String,Dictionary<String,String>>() {didSet{
         tableview.reloadData()
         }}
@@ -23,7 +23,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     var cell : WaitTableViewCell!
     var pastCell : WaitTableViewCell!
     var status: [String:String] = ["cell":"wait","pastCell":"wait"]
-    var row: Int!
+    
     let cellIdentifier = "cell"
     var nameReciever: Array<String>!
     var refreshcontrol = UIRefreshControl()
@@ -113,7 +113,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         let cell =  tableview.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! WaitTableViewCell
         visibleChange("select", cell,"cell")
         
-        self.delegate = cell
+        
         cell.delegate = self
         // 특정 cell만 바꾼 cell 을 내놔야 하는데 
         return cell
@@ -129,7 +129,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         cell.fileDate?.text = value[name]!["날짜"]
         cell.filePlayTimeWait?.text = value[name]!["재생시간"]
         cell.endTime?.text = value[name]!["재생시간"]
-        self.delegate = cell
+        cell.hideKey?.text = name
         cell.delegate = self
         return cell
         }
@@ -141,8 +141,10 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
         
-    {   row = indexPath.row
-        delegate?.sendData(data1: row,data2: value,data3:tableview,data4:nameReciever)
+    {   SharedVariable.Shared.row = indexPath.row
+        SharedVariable.Shared.valueLast = self.value
+        SharedVariable.Shared.nameRecieve = nameReciever
+        SharedVariable.Shared.tableview = tableview
         
         tableview.deselectRow(at: indexPath, animated: false)
         if clickNumber == 0

@@ -163,6 +163,13 @@
                                                         <action selector="filenameChange:" destination="2wY-eP-nf1" eventType="editingDidEndOnExit" id="A89-Wz-e57"/>
                                                     </connections>
                                                 </textField>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="key" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1Kw-sE-9AF">
+                                                    <rect key="frame" x="147" y="71" width="27" height="21"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="Yth-2F-7K7" firstAttribute="top" secondItem="OuC-oK-4jw" secondAttribute="top" constant="114" id="1su-vM-Wng"/>
@@ -207,6 +214,7 @@
                                             <outlet property="fileName" destination="RU9-nh-uNT" id="epp-9t-rCk"/>
                                             <outlet property="fileNameWait" destination="h1r-gR-zpm" id="bmi-Lk-J4E"/>
                                             <outlet property="filePlayTimeWait" destination="9iT-Xa-hiF" id="NI3-GK-b3I"/>
+                                            <outlet property="hideKey" destination="1Kw-sE-9AF" id="xdy-SW-meE"/>
                                             <outlet property="pauseButton" destination="Jwy-ak-ykE" id="66X-lY-am3"/>
                                             <outlet property="playButton" destination="Tcw-x5-hVB" id="FoE-I9-VaX"/>
                                             <outlet property="progressView" destination="Yth-2F-7K7" id="agI-Ac-zg8"/>
