@@ -23,7 +23,7 @@ class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationCon
     var repeater: Int = 0
     var downloadTask: StorageDownloadTask!
     
-    let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+    let documentDirectory = FileManager.default.temporaryDirectory
     
     
     // 실행 ui
@@ -60,10 +60,18 @@ class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationCon
     var audioFile : URL!
     let timePlayerSelector:Selector = #selector(WaitTableViewCell.updatePlayTime)
     
-   
-    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+    func stopFunction(){
+        buttonState(true, pause: false, stop: false)
         audioPlayer.stop()
+        
         progressTimer.invalidate()
+        
+        currentTime.text = SharedVariable.Shared.convertNSTimeInterval2String(0)
+        progressView.progress = 0
+        
+    }
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        stopFunction()
         //재생버튼 활성화 나머지 버튼 비활성화
         
         
@@ -84,43 +92,55 @@ class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationCon
             }
     }
     }
-
+    func DownloadOrPlay(){
+        self.buttonState(false, pause: true, stop: true)
+        self.preparePlay()
+        self.audioPlayer.play()
+        
+        self.progressTimer = Timer.scheduledTimer(timeInterval: 0.01, target: self, selector: self.timePlayerSelector, userInfo: nil, repeats: true)
+    }
     @IBAction func Buttontouched ( _ sender: UIButton){
-        if sender == playButton {
+        if sender == playButton
+        {
             
-            if pauseButton.isEnabled == false, stopButton.isEnabled == true{
-                buttonState(false, pause: true, stop: true)
+            if pauseButton.isEnabled == false, stopButton.isEnabled == true
+            {
                 
+                self.buttonState(false, pause: true, stop: true)
                 audioPlayer.play()
                 
             }
-            else {
-                let file: String! = hideKey.text
+            else
+            {   self.buttonState(false, pause: false, stop: false)
+                let file: String = hideKey.text!
                         let stor = Storage.storage()
                         let storef = stor.reference()
                         let islandRef = storef.child("Recordings/이전/\(file).m4a")
                         
                         
                         
-                        let localURL = documentDirectory.appendingPathComponent("\(file).m4a")
+                        let localString = documentDirectory.appendingPathComponent("\(file).m4a")
+                
+                        self.audioFile = localString
+                
+                if FileManager.default.fileExists(atPath: localString.path) == false
+                {
+                    update(islandRef,localString)
                         
                         
-                        update(islandRef,localURL)
-                        
-                        
-                        
-                        let observer = downloadTask.observe(.success) { snapshot in
-                            
-                            
-                            
-                            self.audioFile = localURL
-                            self.preparePlay()
-                            self.audioPlayer.play()
-                            self.buttonState(false, pause: true, stop: true)
-                            self.progressTimer = Timer.scheduledTimer(timeInterval: 0.01, target: self, selector: self.timePlayerSelector, userInfo: nil, repeats: true)
-                        
+                        let observer = downloadTask.observe(.success)
+                        {snapshot in
+                            print("download")
+                            self.DownloadOrPlay()
+                        }
+                    
                 }
-            
+                else
+                {
+                    print("local")
+                        DownloadOrPlay()
+                }
+                
             }
             
             
@@ -131,14 +151,7 @@ class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationCon
             buttonState(true, pause: false, stop: true)
             
         } else if sender == stopButton, playButton.isEnabled == false || pauseButton.isEnabled == false {
-            buttonState(true, pause: false, stop: false)
-            audioPlayer.stop()
-            
-            progressTimer.invalidate()
-            
-            currentTime.text = SharedVariable.Shared.convertNSTimeInterval2String(0)
-            progressView.progress = 0
-            
+            stopFunction()
             
         }
         

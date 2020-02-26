@@ -27,8 +27,9 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     let cellIdentifier = "cell"
     var nameReciever: Array<String>!
     var refreshcontrol = UIRefreshControl()
+    var cellKey: String!
     
- 
+    let documentDirectory = FileManager.default.temporaryDirectory
     
     @IBOutlet var tableview: UITableView!
     
@@ -56,47 +57,47 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         //        }
         return value.count
     }
-    func visibleChange(_ target: String,_ cell: WaitTableViewCell,_ letter : String)
-    {
-        status[letter] = target
-        if target == "wait"
-        {
-            
-            cell.fileName?.isHidden = true
-            cell.fileDate?.isHidden = true
-            cell.playButton?.isHidden = true
-            cell.pauseButton?.isHidden = true
-            cell.currentTime?.isHidden = true
-            cell.endTime?.isHidden = true
-            cell.stopButton?.isHidden = true
-            cell.progressView?.isHidden = true
-            
-            cell.fileNameWait?.isHidden = false
-            cell.fileDateWait?.isHidden = false
-            cell.filePlayTimeWait?.isHidden = false
-            
-            
-            
-            
-            
-        }
-        else if target == "select"
-        {
-            cell.fileName?.isHidden = false
-            cell.fileDate?.isHidden = false
-            cell.playButton?.isHidden = false
-            cell.pauseButton?.isHidden = false
-            cell.currentTime?.isHidden = false
-            cell.endTime?.isHidden = false
-            cell.stopButton?.isHidden = false
-            cell.progressView?.isHidden = false
-            
-            cell.fileNameWait?.isHidden = true
-            cell.fileDateWait?.isHidden = true
-            cell.filePlayTimeWait?.isHidden = true
-            
-        }
-    }
+//    func visibleChange(_ target: String,_ cell: WaitTableViewCell,_ letter : String)
+//    {
+//        status[letter] = target
+//        if target == "wait"
+//        {
+//
+//            cell.fileName?.isHidden = true
+//            cell.fileDate?.isHidden = true
+//            cell.playButton?.isHidden = true
+//            cell.pauseButton?.isHidden = true
+//            cell.currentTime?.isHidden = true
+//            cell.endTime?.isHidden = true
+//            cell.stopButton?.isHidden = true
+//            cell.progressView?.isHidden = true
+//
+//            cell.fileNameWait?.isHidden = false
+//            cell.fileDateWait?.isHidden = false
+//            cell.filePlayTimeWait?.isHidden = false
+//
+//
+//
+//
+//
+//        }
+//        else if target == "select"
+//        {
+//            cell.fileName?.isHidden = false
+//            cell.fileDate?.isHidden = false
+//            cell.playButton?.isHidden = false
+//            cell.pauseButton?.isHidden = false
+//            cell.currentTime?.isHidden = false
+//            cell.endTime?.isHidden = false
+//            cell.stopButton?.isHidden = false
+//            cell.progressView?.isHidden = false
+//
+//            cell.fileNameWait?.isHidden = true
+//            cell.fileDateWait?.isHidden = true
+//            cell.filePlayTimeWait?.isHidden = true
+//
+//        }
+//    }
     func initLayout()
     {
         tableview.rowHeight = UITableView.automaticDimension
@@ -110,33 +111,43 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {   if indexPath.row == selected?.row {
-        let cell =  tableview.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! WaitTableViewCell
-        visibleChange("select", cell,"cell")
-        
-        
+        let cell =  tableview.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! WaitTableViewCell
+//        visibleChange("select", cell,"cell")
+        nameReciever = Array(value.keys)
+        let name = nameReciever[indexPath.row]
+        cell.fileName?.text = value[name]!["파일이름"]
+        cell.fileDate?.text = value[name]!["날짜"]
+        cell.hideKey?.text = name
+        cell.endTime?.text = value[name]!["재생시간"]
         cell.delegate = self
-        // 특정 cell만 바꾼 cell 을 내놔야 하는데 
+        // 특정 cell만 바꾼 cell 을 내놔야 하는데
         return cell
     }else{
-        let cell = tableview.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! WaitTableViewCell
-        visibleChange("wait", cell,"cell")
-        status["cell"] = "select"
+        cell = tableview.dequeueReusableCell(withIdentifier: "sample", for: indexPath) as! WaitTableViewCell
+        
+//        status["cell"] = "select"
         nameReciever = Array(value.keys)
         let name = nameReciever[indexPath.row]
         cell.fileNameWait?.text = value[name]!["파일이름"]
         cell.fileDateWait?.text = value[name]!["날짜"]
-        cell.fileName?.text = value[name]!["파일이름"]
-        cell.fileDate?.text = value[name]!["날짜"]
         cell.filePlayTimeWait?.text = value[name]!["재생시간"]
-        cell.endTime?.text = value[name]!["재생시간"]
-        cell.hideKey?.text = name
+        
         cell.delegate = self
         return cell
         }
         
         
     }
-    
+    func equalStopButton
+        (cell:WaitTableViewCell){
+        cell.buttonState(true, pause: false, stop: false)
+        cell.audioPlayer.stop()
+        
+        cell.progressTimer.invalidate()
+        
+        cell.currentTime.text = SharedVariable.Shared.convertNSTimeInterval2String(0)
+        cell.progressView.progress = 0
+    }
    
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
@@ -149,32 +160,51 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         tableview.deselectRow(at: indexPath, animated: false)
         if clickNumber == 0
         {
-            selected = indexPath
-            clickNumber = 1
-            let cell = tableview.cellForRow(at: indexPath) as! WaitTableViewCell
             
-            visibleChange("select", cell, "cell")
-            SharedVariable.Shared.nameOfFile = cell.fileName?.text
+            selected = indexPath
+           clickNumber = 1
+           cell = tableview.cellForRow(at: indexPath) as! WaitTableViewCell
+            
+           
+           SharedVariable.Shared.nameOfFile = cell.fileNameWait?.text
+            
+            tableView.reloadData()
         }
         else
         {
-            if  status["cell"] == "select"
-                    {
-                        let cell = tableview.cellForRow(at: indexPath) as! WaitTableViewCell
-            
-                        visibleChange("select", cell, "cell")
-                        SharedVariable.Shared.nameOfFile = cell.fileName?.text
-                        let pastCell = tableview.cellForRow(at: selected) as! WaitTableViewCell?
-//                        if pastCell != nil, let pastCell = pastCell
-//                        {
-//                            visibleChange("wait", pastCell, "pastCell")
-//
-//                        }
-                        if indexPath.row == selected.row {
-                            clickNumber = 0
-                        }
-                        selected = indexPath
+            if  indexPath.row != selected.row {
+                
+                
+                pastCell = tableView.cellForRow(at: selected) as!
+                WaitTableViewCell
+                
+                cell = tableView.cellForRow(at: indexPath) as! WaitTableViewCell
+                
+                SharedVariable.Shared.nameOfFile = cell.fileNameWait?.text
+                
+                tableView.reloadData()
+                if pastCell.audioPlayer != nil {
+                equalStopButton(cell: pastCell) // *무조건 stop 인데 실행중 조건 걸고 하면 더 효율적일듯
+                }
+                selected = indexPath
             }
+//            if  status["cell"] == "select"
+//                    {
+//                        let cell = tableview.cellForRow(at: indexPath) as! WaitTableViewCell
+//
+//                        visibleChange("select", cell, "cell")
+//                        SharedVariable.Shared.nameOfFile = cell.fileName?.text
+//                        let pastCell = tableview.cellForRow(at: selected) as! WaitTableViewCell?
+////                        if pastCell != nil, let pastCell = pastCell
+////                        {
+////                            visibleChange("wait", pastCell, "pastCell")
+////
+////                        }
+//                        if indexPath.row == selected.row {
+//                            clickNumber = 0
+//                        }
+//                        selected = indexPath
+//            }
 //            } else
 //            {
 //                let cell = tableview.cellForRow(at: indexPath) as! WaitTableViewCell

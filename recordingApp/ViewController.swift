@@ -21,7 +21,7 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
     var audioRecorder: AVAudioRecorder! // 오디오 레코더 인스턴스
     var audioFile : URL! // 주소
     let list: [Int:String] = [1:"일요일",2:"월요일",3:"화요일",4:"수요일",5:"목요일",6:"금요일",7:"토요일"]
-    let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+    let documentDirectory = FileManager.default.temporaryDirectory
     var valueList = Dictionary<String,Dictionary<String,String>>() {didSet{
         delegate?.send(data1: self.valueList)
         }}
@@ -159,7 +159,9 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
         let key = ref.child("FileNames").childByAutoId().key
         
         
-        if let year = components.year, let month = components.month, let day = components.day, let weekday = components.weekday, let dayOfWeek = list[weekday], let playTime = playTime, let key = key{ self.ref.child("FileNames/\(key)").updateChildValues(["날짜":"\(year).\(month).\(day)","요일": dayOfWeek,"번호":"\(yes)","재생시간":"\(playTime)","파일이름":"recordFile\(yes)"
+        if let year = components.year, let month = components.month, let day = components.day, let weekday = components.weekday, let dayOfWeek = list[weekday], let playTime = playTime, let key = key
+        {
+            self.ref.child("FileNames/\(key)").updateChildValues(["날짜":"\(year).\(month).\(day)","요일": dayOfWeek,"번호":"\(yes)","재생시간":"\(playTime)","파일이름":"recordFile\(yes)"
             ], withCompletionBlock: { (Error:Error?, DatabaseReference:DatabaseReference) in
                 print(Error)
             }) // if let 에서 nil 값을 넣으면  error 도 안뜨고 안넣어짐 if let 을 안 들어오는 듯
@@ -167,7 +169,7 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
             
             
             self.valueList[key] = ["날짜":"\(year).\(month).\(day)","요일": dayOfWeek,"번호":"\(yes)","재생시간":"\(playTime)","파일이름":"recordFile\(yes)"]
-        }
+        
             
             
             
@@ -176,10 +178,10 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
         
         
         // Create a reference to the file you want to upload
-        let riversRef = storageRef.child("Recordings/이전/\(key).m4a")
+             let riversRef = storageRef.child("Recordings/이전/\(key).m4a")
         
         // Upload the file to the path "images/rivers.jpg"
-        let uploadTask = riversRef.putFile(from: documentDirectory.appendingPathComponent("recordFile.m4a"), metadata: nil){ (metadata, error) in
+            let uploadTask = riversRef.putFile(from: documentDirectory.appendingPathComponent("recordFile.m4a"), metadata: nil){ (metadata, error) in
             guard let metadata = metadata else {
                 print("error occured")
                 return
@@ -196,6 +198,7 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
         }
         uploadTask.observe(.progress) {snapshot in
             if let part = snapshot.progress?.completedUnitCount, let total = snapshot.progress?.totalUnitCount { SharedVariable.Shared.showToast("\(part)/\(total)", self.view)
+        }
         }
         }
     }
