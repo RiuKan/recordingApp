@@ -17,7 +17,7 @@ class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationCon
     
     var delegate: sendData? = nil
     var progressTimer : Timer!
-    var audioPlayer: AVAudioPlayer!
+    
     let maxVolume: Float = 10.0
     var ref: DatabaseReference!
     var repeater: Int = 0
@@ -62,13 +62,13 @@ class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationCon
     
     func stopFunction(){
         buttonState(true, pause: false, stop: false)
-        audioPlayer.stop()
+        SharedVariable.Shared.audioPlayer.stop()
         
         progressTimer.invalidate()
         
         currentTime.text = SharedVariable.Shared.convertNSTimeInterval2String(0)
         progressView.progress = 0
-        
+        SharedVariable.Shared.audioPlayer = nil
     }
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
         stopFunction()
@@ -95,7 +95,7 @@ class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationCon
     func DownloadOrPlay(){
         self.buttonState(false, pause: true, stop: true)
         self.preparePlay()
-        self.audioPlayer.play()
+        SharedVariable.Shared.audioPlayer.play()
         
         self.progressTimer = Timer.scheduledTimer(timeInterval: 0.01, target: self, selector: self.timePlayerSelector, userInfo: nil, repeats: true)
     }
@@ -107,7 +107,7 @@ class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationCon
             {
                 
                 self.buttonState(false, pause: true, stop: true)
-                audioPlayer.play()
+                SharedVariable.Shared.audioPlayer.play()
                 
             }
             else
@@ -144,9 +144,9 @@ class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationCon
             }
             
             
-        } else if sender == pauseButton, playButton.isEnabled == false, audioPlayer.isPlaying == true {
+        } else if sender == pauseButton, playButton.isEnabled == false, SharedVariable.Shared.audioPlayer.isPlaying == true {
             
-            audioPlayer.pause()
+            SharedVariable.Shared.audioPlayer.pause()
             
             buttonState(true, pause: false, stop: true)
             
@@ -157,23 +157,23 @@ class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationCon
         
     }
     @objc func updatePlayTime () {
-        currentTime.text = SharedVariable.Shared.convertNSTimeInterval2String(audioPlayer.currentTime)
-        progressView.progress = Float(audioPlayer.currentTime/audioPlayer.duration)
+        currentTime.text = SharedVariable.Shared.convertNSTimeInterval2String(SharedVariable.Shared.audioPlayer.currentTime)
+        progressView.progress = Float(SharedVariable.Shared.audioPlayer.currentTime/SharedVariable.Shared.audioPlayer.duration)
     }
     func preparePlay () {
         
         
         if let audioFile = audioFile {
         do {
-            audioPlayer = try AVAudioPlayer(contentsOf: audioFile) //오류발생 가능 함수
+            SharedVariable.Shared.audioPlayer = try AVAudioPlayer(contentsOf: audioFile) //오류발생 가능 함수
         } catch let error as NSError { //오류타입
             print("error-initplay : \(error)")  //오류타입에 대한 처리 구문
         }
         }
-        endTime.text = SharedVariable.Shared.convertNSTimeInterval2String(audioPlayer.duration)
-        audioPlayer.delegate = self
+        endTime.text = SharedVariable.Shared.convertNSTimeInterval2String(SharedVariable.Shared.audioPlayer.duration)
+        SharedVariable.Shared.audioPlayer.delegate = self
         progressView.progress = 0
-        audioPlayer.volume = 5.0
+        SharedVariable.Shared.audioPlayer.volume = 5.0
         
         
     }

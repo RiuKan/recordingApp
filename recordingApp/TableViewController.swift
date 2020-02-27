@@ -32,7 +32,12 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     let documentDirectory = FileManager.default.temporaryDirectory
     
     @IBOutlet var tableview: UITableView!
+    @IBOutlet var menuButton: UIButton!
     
+    @IBAction func menuButtonClicked (_ sender: UIButton)
+    {
+      
+    }
     
    
             // optioal any 로 오게 되는데, 이것을 깨서
@@ -141,12 +146,14 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     func equalStopButton
         (cell:WaitTableViewCell){
         cell.buttonState(true, pause: false, stop: false)
-        cell.audioPlayer.stop()
+        
+        SharedVariable.Shared.audioPlayer.stop()
         
         cell.progressTimer.invalidate()
         
         cell.currentTime.text = SharedVariable.Shared.convertNSTimeInterval2String(0)
         cell.progressView.progress = 0
+        
     }
    
     
@@ -175,18 +182,19 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
             if  indexPath.row != selected.row {
                 
                 
-                pastCell = tableView.cellForRow(at: selected) as!
-                WaitTableViewCell
+               
+                selected = indexPath
+                tableView.reloadData()
                 
                 cell = tableView.cellForRow(at: indexPath) as! WaitTableViewCell
                 
                 SharedVariable.Shared.nameOfFile = cell.fileNameWait?.text
                 
-                tableView.reloadData()
-                if pastCell.audioPlayer != nil {
-                equalStopButton(cell: pastCell) // *무조건 stop 인데 실행중 조건 걸고 하면 더 효율적일듯
+                
+                if SharedVariable.Shared.audioPlayer != nil{
+                    equalStopButton(cell: cell) // *무조건 stop 인데 실행중 조건 걸고 하면 더 효율적일듯
                 }
-                selected = indexPath
+                
             }
 //            if  status["cell"] == "select"
 //                    {

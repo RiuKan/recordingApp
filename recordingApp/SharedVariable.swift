@@ -7,10 +7,10 @@
 //
 
 import UIKit
-
+import AVFoundation
 class SharedVariable:NSObject  {
     static let Shared = SharedVariable()
-    
+    var audioPlayer: AVAudioPlayer!
     var nameOfFile: String!
     var valueLast: Dictionary<String, Dictionary<String, String>> = [:]
     var tableview: UITableView = UITableView.init()
