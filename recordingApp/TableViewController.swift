@@ -31,12 +31,38 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     let documentDirectory = FileManager.default.temporaryDirectory
     
+    
+    
+    
     @IBOutlet var tableview: UITableView!
     @IBOutlet var menuButton: UIButton!
+    func deleteTmps (_ completionhandler: () -> () ){
+        let temporary = FileManager.default.temporaryDirectory
+        do{ let files = try FileManager.default.contentsOfDirectory(atPath: temporary.path)
+            for files in files {
+                try FileManager.default.removeItem(at: temporary.appendingPathComponent(files))
+            } } catch {
+                print("remove error")
+        }
+        completionhandler()
+    }
     
     @IBAction func menuButtonClicked (_ sender: UIButton)
     {
-      
+        let actionView = UIAlertController(title: "임시파일 삭제", message: "첫 재생 시 생성된 임시파일을 삭제 합니다. 임시 파일은 다시 재생할 때 빠른 재생과 저장소의 수명을 위해 사용됩니다.(주기적으로 지워지지만, 필요시 지워주셔도 무방합니다.)", preferredStyle: UIAlertController.Style.alert)
+        let action = UIAlertAction.init(title: "취소", style: .destructive, handler: nil)
+        let actionTwo = UIAlertAction(title: "삭제", style: .default) { (UIAlertAction) in
+            self.deleteTmps {
+                SharedVariable.Shared.showToast("delete complete", (UIApplication.shared.keyWindow?.rootViewController!.view)!)
+            }
+        }
+        
+        actionView.addAction(action)
+        actionView.addAction(actionTwo)
+        
+        
+        present(actionView,animated: true,completion: nil)
+        
     }
     
    
@@ -183,8 +209,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
                 
                 
                
-                selected = indexPath
-                tableView.reloadData()
+                
                 
                 cell = tableView.cellForRow(at: indexPath) as! WaitTableViewCell
                 
@@ -194,6 +219,8 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
                 if SharedVariable.Shared.audioPlayer != nil{
                     equalStopButton(cell: cell) // *무조건 stop 인데 실행중 조건 걸고 하면 더 효율적일듯
                 }
+                tableView.reloadData()
+                selected = indexPath
                 
             }
 //            if  status["cell"] == "select"

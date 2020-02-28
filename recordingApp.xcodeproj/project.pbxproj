@@ -21,7 +21,6 @@
 		DA1ED92823486D9F00614323 /* WaitTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA1ED92723486D9F00614323 /* WaitTableViewCell.swift */; };
 		DA1ED92C234875A300614323 /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA1ED92B234875A300614323 /* TableViewController.swift */; };
 		DA1ED92E2348798800614323 /* SharedVariable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA1ED92D2348798800614323 /* SharedVariable.swift */; };
-		DA2F4AD42407CAF5001ED0CF /* MenuTableViewController.temp_caseinsensitive_rename.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2F4AD32407CAF5001ED0CF /* MenuTableViewController.temp_caseinsensitive_rename.swift */; };
 		DAC8375823478B0E00C1B019 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DAC8375723478B0E00C1B019 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
@@ -70,7 +69,6 @@
 		DA1ED92723486D9F00614323 /* WaitTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaitTableViewCell.swift; sourceTree = "<group>"; };
 		DA1ED92B234875A300614323 /* TableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
 		DA1ED92D2348798800614323 /* SharedVariable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedVariable.swift; sourceTree = "<group>"; };
-		DA2F4AD32407CAF5001ED0CF /* MenuTableViewController.temp_caseinsensitive_rename.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuTableViewController.temp_caseinsensitive_rename.swift; sourceTree = "<group>"; };
 		DAC8375723478B0E00C1B019 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -147,7 +145,6 @@
 				DA13CF1B233651A500E0F1ED /* ViewController.swift */,
 				DA1ED92D2348798800614323 /* SharedVariable.swift */,
 				DA13CF1D233651A500E0F1ED /* Main.storyboard */,
-				DA2F4AD32407CAF5001ED0CF /* MenuTableViewController.temp_caseinsensitive_rename.swift */,
 				DA1ED92723486D9F00614323 /* WaitTableViewCell.swift */,
 				DA1ED92B234875A300614323 /* TableViewController.swift */,
 				DA13CF20233651A900E0F1ED /* Assets.xcassets */,
@@ -439,7 +436,6 @@
 			files = (
 				DA13CF1C233651A500E0F1ED /* ViewController.swift in Sources */,
 				DA1ED92823486D9F00614323 /* WaitTableViewCell.swift in Sources */,
-				DA2F4AD42407CAF5001ED0CF /* MenuTableViewController.temp_caseinsensitive_rename.swift in Sources */,
 				DA1ED92E2348798800614323 /* SharedVariable.swift in Sources */,
 				DA13CF1A233651A500E0F1ED /* AppDelegate.swift in Sources */,
 				DA1ED92C234875A300614323 /* TableViewController.swift in Sources */,
