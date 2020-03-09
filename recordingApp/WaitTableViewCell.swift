@@ -189,6 +189,7 @@ class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationCon
         super.awakeFromNib()
         
         
+    
         
     }
 

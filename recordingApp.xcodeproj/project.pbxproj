@@ -8,9 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4AE7F2A8DAF6FC4C75B67D7B /* Pods_recordingAppTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A835AA4979D52C74A7EA34CD /* Pods_recordingAppTests.framework */; };
-		592F90371C4046F1ACCBF0F5 /* Pods_recordingApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7B393C4E0CC6ACD767CBD60 /* Pods_recordingApp.framework */; };
 		8EA14A17C08912694CADC055 /* Pods_recordingApp_recordingAppUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 40208FCD2EDD35C6AE758853 /* Pods_recordingApp_recordingAppUITests.framework */; };
-		DA0CE93223CCBC330018C78F /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA0CE93123CCBC330018C78F /* AudioToolbox.framework */; };
 		DA13CF1A233651A500E0F1ED /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA13CF19233651A500E0F1ED /* AppDelegate.swift */; };
 		DA13CF1C233651A500E0F1ED /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA13CF1B233651A500E0F1ED /* ViewController.swift */; };
 		DA13CF1F233651A500E0F1ED /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DA13CF1D233651A500E0F1ED /* Main.storyboard */; };
@@ -21,6 +19,8 @@
 		DA1ED92823486D9F00614323 /* WaitTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA1ED92723486D9F00614323 /* WaitTableViewCell.swift */; };
 		DA1ED92C234875A300614323 /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA1ED92B234875A300614323 /* TableViewController.swift */; };
 		DA1ED92E2348798800614323 /* SharedVariable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA1ED92D2348798800614323 /* SharedVariable.swift */; };
+		DA254CF2240B8046003CACE4 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA0CE93123CCBC330018C78F /* AudioToolbox.framework */; };
+		DA254CF5240B8048003CACE4 /* Pods_recordingApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7B393C4E0CC6ACD767CBD60 /* Pods_recordingApp.framework */; };
 		DAC8375823478B0E00C1B019 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DAC8375723478B0E00C1B019 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
@@ -77,8 +77,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				592F90371C4046F1ACCBF0F5 /* Pods_recordingApp.framework in Frameworks */,
-				DA0CE93223CCBC330018C78F /* AudioToolbox.framework in Frameworks */,
+				DA254CF5240B8048003CACE4 /* Pods_recordingApp.framework in Frameworks */,
+				DA254CF2240B8046003CACE4 /* AudioToolbox.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -618,6 +618,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = A83CWH6LH4;
 				INFOPLIST_FILE = recordingApp/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -638,6 +639,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = A83CWH6LH4;
 				INFOPLIST_FILE = recordingApp/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

@@ -13,7 +13,7 @@ import FirebaseStorage
 protocol Send {
     func send(data1:Dictionary<String,Dictionary<String,String>>)
 }
-class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationControllerDelegate,UITabBarControllerDelegate {
+class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationControllerDelegate,UITabBarControllerDelegate,SenddataDelegate {
     var delegate: Send?
     var progressTimer : Timer! // 타이머
     var ref:DatabaseReference! //실시간데이터 레퍼
@@ -39,7 +39,9 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
     
     }
     
-    
+    func sendData(data1: Dictionary<String, Dictionary<String, String>>) {
+        valueList = data1
+    }
     
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
         let tab = viewController as? TableViewController
@@ -252,6 +254,8 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
             
             self.tabBarController?.delegate = self
             super.viewDidLoad()
+            let view = self.tabBarController?.viewControllers![1] as! TableViewController
+            view.delegate = self
             
         }
         
