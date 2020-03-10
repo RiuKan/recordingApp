@@ -151,7 +151,14 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
     func uploadProcess () {
         // File located on disk
         yes = findVacancy()
+        
         let date = Date()
+        let datefommater = DateFormatter()
+        datefommater.locale = Locale(identifier: "ko_KR")
+        datefommater.timeZone = TimeZone.autoupdatingCurrent // 왜 KST 는 작동을 안하지?
+        datefommater.timeStyle = .medium
+        datefommater.dateStyle = .none
+        let time = datefommater.string(from: date)
         let calendar = Calendar.current
         let components = calendar.dateComponents([.weekday, .year,.month,.day], from: date)
         
@@ -163,14 +170,14 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
         
         if let year = components.year, let month = components.month, let day = components.day, let weekday = components.weekday, let dayOfWeek = list[weekday], let playTime = playTime, let key = key
         {
-            self.ref.child("FileNames/\(key)").updateChildValues(["날짜":"\(year).\(month).\(day)","요일": dayOfWeek,"번호":"\(yes)","재생시간":"\(playTime)","파일이름":"recordFile\(yes)"
+            self.ref.child("FileNames/\(key)").updateChildValues(["날짜":"\(year).\(month).\(day)","요일": dayOfWeek,"번호":"\(yes)","재생시간":"\(playTime)","파일이름":"recordFile\(yes)","시간":"\(time)"
             ], withCompletionBlock: { (Error:Error?, DatabaseReference:DatabaseReference) in
                 print(Error)
             }) // if let 에서 nil 값을 넣으면  error 도 안뜨고 안넣어짐 if let 을 안 들어오는 듯
             
             
             
-            self.valueList[key] = ["날짜":"\(year).\(month).\(day)","요일": dayOfWeek,"번호":"\(yes)","재생시간":"\(playTime)","파일이름":"recordFile\(yes)"]
+            self.valueList[key] = ["날짜":"\(year).\(month).\(day)","요일": dayOfWeek,"번호":"\(yes)","재생시간":"\(playTime)","파일이름":"recordFile\(yes)","시간":"\(time)"]
         
             
             
@@ -232,6 +239,7 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
         let database = Database.database()
         self.ref = database.reference()
         self.ref.child("FileNames").observeSingleEvent(of: .value, with: {(snapshot) in
+            
             if let value = snapshot.value as? Dictionary<String,Dictionary<String,String>> {
                 
                 self.valueList = value

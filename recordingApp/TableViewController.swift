@@ -15,6 +15,7 @@ protocol SenddataDelegate: class {
 class TableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource,sendData,Send{
     weak var delegate: SenddataDelegate?
     var value = Dictionary<String,Dictionary<String,String>>() {didSet{
+        nameReciever = Array(value.keys).sorted(by: dicDateSortFunc(s1:s2:))
         tableview.reloadData()
         }}
     var ref:DatabaseReference!
@@ -184,15 +185,89 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     {
         return UITableView.automaticDimension
     }
-    
+    func dicDateSortFunc (s1: String, s2: String) -> Bool {
+        let d1 = value[s1]?["날짜"]
+        let d2 = value[s2]?["날짜"]
+        let t1 = value[s1]?["시간"]
+        let t2 = value[s2]?["시간"]
+        
+        var result1 : Date!
+        var result2 : Date!
+        var resultTime1 : Date!
+        var resultTime2 : Date!
+        
+        let formatterD = DateFormatter()
+        formatterD.locale = Locale(identifier: "ko_KR")
+        formatterD.dateFormat = "yyyy.mm.dd"
+        let formatterT = DateFormatter()
+        formatterT.locale = Locale(identifier: "ko_KR")
+        formatterT.timeStyle = .medium
+        if let d1 = d1, let d2 = d2, let t1 = t1, let t2 = t2
+        {
+            
+            
+            let date1 = formatterD.date(from: "\(d1)")
+            let date2 = formatterD.date(from: "\(d2)")
+            
+            let time1 = formatterT.date(from: "\(t1)")
+            let time2 = formatterT.date(from: "\(t2)")
+            
+            if let date1 = date1, let date2 = date2, let time1 = time1, let time2 = time2
+            {
+                result1 = date1 ; result2 = date2
+                resultTime1 = time1 ; resultTime2 = time2
+                
+                
+            }
+            
+        }
+        if result1 != result2 {
+            return result1 < result2
+        } else {
+            return resultTime1 > resultTime2
+        }
+        
+    }
+    func datePresent(date: Date,name: String) -> String{
+        let dateformatterD = DateFormatter()
+        dateformatterD.locale = Locale(identifier: "ko_KR")
+        dateformatterD.dateFormat = "yyyy.mm.dd"
+        dateformatterD.timeZone = TimeZone.autoupdatingCurrent
+        let dateformatterT = DateFormatter()
+        dateformatterT.locale = Locale(identifier: "ko_KR")
+        
+        dateformatterT.timeStyle = .medium
+        let nowdate = dateformatterD.string(from: date)
+        if let d1 = value[name]!["날짜"] {
+            print("d1 = \(d1)")
+            let d1date: Date = dateformatterD.date(from: d1 )!
+            print("d1date=\(d1date)")
+            let nowdate = dateformatterD.date(from: nowdate)
+            print("nowdate=\(nowdate)")
+            if let nowdate = nowdate, d1date == nowdate {
+                return value[name]!["시간"]!
+                print("시간")
+            } else if date-604800 < d1date, d1date < date+604800{
+                return value[name]!["요일"]!
+                print("요일")
+            } else {
+                return value[name]!["날짜"]!
+                print("날짜")
+            }
+        } else {
+            return "error"
+        } //  연산 한꺼번에 b<a<c쓰면 오류, b<a,a<c 로 따로.
+    }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
-    {   if indexPath.row == selected?.row, onOff == 0{
+    {   let date = Date()
+        let name = nameReciever[indexPath.row]
+        if indexPath.row == selected?.row, onOff == 0{
         let cell =  tableview.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! WaitTableViewCell
 //        visibleChange("select", cell,"cell")
-        nameReciever = Array(value.keys)
-        let name = nameReciever[indexPath.row]
+        
+        
         cell.fileName?.text = value[name]!["파일이름"]
-        cell.fileDate?.text = value[name]!["날짜"]
+        cell.fileDate?.text = datePresent(date: date, name: name)
         cell.hideKey?.text = name
         cell.endTime?.text = value[name]!["재생시간"]
         cell.delegate = self
@@ -202,10 +277,10 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         cell = tableview.dequeueReusableCell(withIdentifier: "sample", for: indexPath) as! WaitTableViewCell
         
 //        status["cell"] = "select"
-        nameReciever = Array(value.keys)
+        
         let name = nameReciever[indexPath.row]
         cell.fileNameWait?.text = value[name]!["파일이름"]
-        cell.fileDateWait?.text = value[name]!["날짜"]
+        cell.fileDateWait?.text = datePresent(date: date, name: name)
         cell.filePlayTimeWait?.text = value[name]!["재생시간"]
         cell.hideKey?.text = name
         
