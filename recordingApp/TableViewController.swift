@@ -222,7 +222,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
             
         }
         if result1 != result2 {
-            return result1 < result2
+            return result1 > result2
         } else {
             return resultTime1 > resultTime2
         }
@@ -230,29 +230,39 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
     func datePresent(date: Date,name: String) -> String{
         let dateformatterD = DateFormatter()
-        dateformatterD.locale = Locale(identifier: "ko_KR")
-        dateformatterD.dateFormat = "yyyy.mm.dd"
-        dateformatterD.timeZone = TimeZone.autoupdatingCurrent
-        let dateformatterT = DateFormatter()
-        dateformatterT.locale = Locale(identifier: "ko_KR")
         
-        dateformatterT.timeStyle = .medium
+        dateformatterD.dateFormat = "yyyy.MM.dd" // mm 이 아니라 MM 으로 구분 해주지 않으면 이상한 날짜로 들어감
+        dateformatterD.timeZone = TimeZone(abbreviation: "GMT")
+//        let dateformatterT = DateFormatter()
+//        dateformatterT.locale = Locale(identifier: "ko_KR")
+//
+//        dateformatterT.timeStyle = .medium
+        // 날짜 설정 중요 : 타임존 GMT 로 해주어야, 국내 시간 변환시 맞음 .
+        // ko locale 설정시 하루 차이 나버림 .
+        // 기본 date 는 default 는 15시간 차이(설정 안 했을때)
         let nowdate = dateformatterD.string(from: date)
         if let d1 = value[name]!["날짜"] {
             print("d1 = \(d1)")
             let d1date: Date = dateformatterD.date(from: d1 )!
             print("d1date=\(d1date)")
-            let nowdate = dateformatterD.date(from: nowdate)
+            var nowdate = dateformatterD.date(from: nowdate)!
+            
+            
             print("nowdate=\(nowdate)")
-            if let nowdate = nowdate, d1date == nowdate {
-                return value[name]!["시간"]!
+            if  d1date == nowdate {
                 print("시간")
-            } else if date-604800 < d1date, d1date < date+604800{
-                return value[name]!["요일"]!
+                return value[name]!["시간"]!
+                
+            } else if nowdate-604800 <= d1date, d1date < nowdate-86400,d1date >= nowdate+86400, d1date < nowdate+604800{// 어제는 따로 , 일주일 전까지
                 print("요일")
+                return value[name]!["요일"]!
+                
+            } else if nowdate-86400 <= d1date, d1date < nowdate+86400{
+                
+                return "어제"
             } else {
-                return value[name]!["날짜"]!
                 print("날짜")
+                return value[name]!["날짜"]!
             }
         } else {
             return "error"
