@@ -53,10 +53,14 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
     @IBOutlet weak var recordButton: UIButton!
     
     @IBOutlet weak var recordingTime: UILabel!
+    @IBOutlet weak var folderSelectorView : UIView!
+    @IBOutlet weak var arrowButtonImage: UIImage!
     
-    
-    
- 
+    @IBAction func selectorByTwo(_ sender1:UIView,_ sender2: UIImage) {
+        if sender1.tag == 1 || sender2.{
+            
+        }
+    }
     // selectRecordAudiofile() 로 불러온 주소에
     // 레코딩 장전
     func prepareRecording() {
@@ -250,9 +254,11 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
             
             
             super.viewDidLoad()
-         
             
+            self.folderSelectorView.layer.cornerRadius = 7
+            self.folderSelectorView.layer.borderWidth = 1
             
+    
         }
         
         

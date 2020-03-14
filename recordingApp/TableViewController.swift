@@ -258,6 +258,9 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         
         
     }
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        <#code#>
+    }
     func equalStopButton
         (cell:WaitTableViewCell){
         cell.buttonState(true, pause: false, stop: false)
