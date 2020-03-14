@@ -10,11 +10,12 @@ import UIKit
 import AVFoundation
 import FirebaseDatabase
 import FirebaseStorage
-protocol Send {
-    func send(data1:Dictionary<String,Dictionary<String,String>>)
-}
-class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationControllerDelegate,UITabBarControllerDelegate,SenddataDelegate {
-    var delegate: Send?
+
+class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationControllerDelegate,UITabBarControllerDelegate {
+    
+    
+    
+    
     var progressTimer : Timer! // 타이머
     var ref:DatabaseReference! //실시간데이터 레퍼
     var storageRef: StorageReference! //스토리지 레퍼
@@ -22,31 +23,23 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
     var audioFile : URL! // 주소
     let list: [Int:String] = [1:"일요일",2:"월요일",3:"화요일",4:"수요일",5:"목요일",6:"금요일",7:"토요일"]
     let documentDirectory = FileManager.default.temporaryDirectory
-    var valueList = Dictionary<String,Dictionary<String,String>>() {didSet{
-        delegate?.send(data1: self.valueList)
-        }}
     var yes: Int = 0
     var playTime: String!
     let listMaking = { (list: Dictionary<String,Dictionary<String,String>>) -> [Int] in
         var midlist: [Int] = []
         for (key,value) in list {
-            let number: Int? = Int(value["번호"]!) // 왜 ?빼면 coercion문제 생기는거지?
+            if let value = value["번호"] {
+            let number: Int? = Int(value) // 왜 ?빼면 coercion문제 생기는거지?
             if let number = number {
            midlist.append(number)
+            }
             }
         }
         return midlist
     
     }
+   
     
-    func sendData(data1: Dictionary<String, Dictionary<String, String>>) {
-        valueList = data1
-    }
-    
-    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
-        let tab = viewController as? TableViewController
-        tab?.value = self.valueList
-    }
     
     
     
@@ -128,7 +121,7 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
     func findVacancy() -> Int{
         
         var i = 0
-        let lists:[Int] = listMaking(valueList)
+        let lists:[Int] = listMaking(SharedVariable.Shared.valueLast)
         while true {
                 if lists.firstIndex(of: i) == nil {
                     break
@@ -140,13 +133,7 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
         return i
     }
         
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
     
-        let next = segue.destination as! UITabBarController
-        let nextController = next.viewControllers?[1] as! TableViewController
-        
-        nextController.value = valueList
-    }
     
     func uploadProcess () {
         // File located on disk
@@ -177,7 +164,8 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
             
             
             
-            self.valueList[key] = ["날짜":"\(year).\(month).\(day)","요일": dayOfWeek,"번호":"\(yes)","재생시간":"\(playTime)","파일이름":"recordFile\(yes)","시간":"\(time)"]
+            SharedVariable.Shared.valueLast[key] = ["날짜":"\(year).\(month).\(day)","요일": dayOfWeek,"번호":"\(yes)","재생시간":"\(playTime)","파일이름":"recordFile\(yes)","시간":"\(time)"]
+            
         
             
             
@@ -242,7 +230,7 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
             
             if let value = snapshot.value as? Dictionary<String,Dictionary<String,String>> {
                 
-                self.valueList = value
+                SharedVariable.Shared.valueLast = value
                 completionHandler()
                 
                 
@@ -260,12 +248,13 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
         
         loadFromFireBase( ){
             
-            self.tabBarController?.delegate = self
+            
             super.viewDidLoad()
-            let view = self.tabBarController?.viewControllers![1] as! TableViewController
-            view.delegate = self
+         
+            
             
         }
+        
         
         
     
@@ -278,7 +267,6 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         
-        initPlay()
         
         // Do any additional setup after loading the view.
         

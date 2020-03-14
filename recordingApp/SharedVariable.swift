@@ -12,11 +12,56 @@ class SharedVariable:NSObject  {
     static let Shared = SharedVariable()
     var audioPlayer: AVAudioPlayer!
     var nameOfFile: String!
-    var valueLast: Dictionary<String, Dictionary<String, String>> = [:]
+    var valueLast: Dictionary<String, Dictionary<String, String>> = [:] {didSet {
+        nameRecieve = Array(self.valueLast.keys).sorted(by: dicDateSortFunc(s1:s2:))
+        tableview.reloadData()
+        }}
     var tableview: UITableView = UITableView.init()
     var nameRecieve: Array<String> = []
     var row: Int = 0
-    
+    func dicDateSortFunc (s1: String, s2: String) -> Bool {
+        let d1 = self.valueLast[s1]?["날짜"]
+        let d2 = self.valueLast[s2]?["날짜"]
+        let t1 = self.valueLast[s1]?["시간"]
+        let t2 = self.valueLast[s2]?["시간"]
+        
+        var result1 : Date!
+        var result2 : Date!
+        var resultTime1 : Date!
+        var resultTime2 : Date!
+        
+        let formatterD = DateFormatter()
+        formatterD.locale = Locale(identifier: "ko_KR")
+        formatterD.dateFormat = "yyyy.mm.dd"
+        let formatterT = DateFormatter()
+        formatterT.locale = Locale(identifier: "ko_KR")
+        formatterT.timeStyle = .medium
+        if let d1 = d1, let d2 = d2, let t1 = t1, let t2 = t2
+        {
+            
+            
+            let date1 = formatterD.date(from: "\(d1)")
+            let date2 = formatterD.date(from: "\(d2)")
+            
+            let time1 = formatterT.date(from: "\(t1)")
+            let time2 = formatterT.date(from: "\(t2)")
+            
+            if let date1 = date1, let date2 = date2, let time1 = time1, let time2 = time2
+            {
+                result1 = date1 ; result2 = date2
+                resultTime1 = time1 ; resultTime2 = time2
+                
+                
+            }
+            
+        }
+        if result1 != result2 {
+            return result1 > result2
+        } else {
+            return resultTime1 > resultTime2
+        }
+        
+    }
     func showToast(_ message : String,_ view: UIView) {
         let width_variable:CGFloat = 10
         let toastLabel = UILabel(frame: CGRect(x: width_variable, y: view.frame.size.height-100, width: view.frame.size.width-2*width_variable, height: 35))

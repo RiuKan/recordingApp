@@ -10,12 +10,10 @@ import UIKit
 import AVFoundation
 import FirebaseDatabase
 import FirebaseStorage
-protocol sendData {
-    func senddata (_ data1:Dictionary<String, Dictionary<String, String>>)
-}
+
 class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationControllerDelegate {
     
-    var delegate: sendData? = nil
+     
     var progressTimer : Timer!
     
     let maxVolume: Float = 10.0
@@ -49,10 +47,14 @@ class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationCon
         if let name = name {
            ref = Database.database().reference()
             ref.child("FileNames").child("\(id)").child("파일이름").setValue("\(name)")
-            SharedVariable.Shared.valueLast[id]!["파일이름"] = name
+           
+            ref.child("FileNames").child("\(id)").child("번호").setValue(nil)
+            
+            SharedVariable.Shared.valueLast["\(id)"]!["파일이름"] = "\(name)"
+            
+            SharedVariable.Shared.valueLast["\(id)"]!["번호"] = nil
         }
-        delegate?.senddata(SharedVariable.Shared.valueLast)
-           // 여기 valueLast.keys만 변수 따로 담아주면 네임 바꿀때마다 따로 해줄 필요 없을듯
+        // 여기 valueLast.keys만 변수 따로 담아주면 네임 바꿀때마다 따로 해줄 필요 없을듯
     }
     
    // 프로토콜로 못 불러왔음 자꾸 값을 넣었는데, 프로토콜끝나면 nil이 되버림.
