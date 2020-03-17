@@ -42,17 +42,17 @@ class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationCon
     
     @IBAction func filenameChange (_ sender:UITextField) {
         let name  = fileName.text
-        
-        let id = SharedVariable.Shared.nameRecieve[SharedVariable.Shared.row]
+        let sectionName = SharedVariable.Shared.sortedArray[SharedVariable.Shared.section]
+        let id = SharedVariable.Shared.nameRecieve[sectionName]![SharedVariable.Shared.row]
         if let name = name {
            ref = Database.database().reference()
-            ref.child("FileNames").child("\(id)").child("파일이름").setValue("\(name)")
+            ref.child("FileNames").child("\(sectionName)").child("\(id)").child("파일이름").setValue("\(name)")
            
-            ref.child("FileNames").child("\(id)").child("번호").setValue(nil)
+            ref.child("FileNames").child("\(sectionName)").child("\(id)").child("번호").setValue(nil)
             
-            SharedVariable.Shared.valueLast["\(id)"]!["파일이름"] = "\(name)"
+            SharedVariable.Shared.valueLast[sectionName]!["\(id)"]!["파일이름"] = "\(name)"
             
-            SharedVariable.Shared.valueLast["\(id)"]!["번호"] = nil
+            SharedVariable.Shared.valueLast[sectionName]!["\(id)"]!["번호"] = nil
         }
         // 여기 valueLast.keys만 변수 따로 담아주면 네임 바꿀때마다 따로 해줄 필요 없을듯
     }

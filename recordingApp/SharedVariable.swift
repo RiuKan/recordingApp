@@ -8,17 +8,29 @@
 
 import UIKit
 import AVFoundation
-class SharedVariable:NSObject  {
+class SharedVariable:NSObject {
+    
     static let Shared = SharedVariable()
+    
     var audioPlayer: AVAudioPlayer!
     var nameOfFile: String!
-    var valueLast: Dictionary<String, Dictionary<String, String>> = [:] {didSet {
-        nameRecieve = Array(self.valueLast.keys).sorted(by: dicDateSortFunc(s1:s2:))
+    var valueLast: Dictionary<String,Dictionary<String, Dictionary<String, String>>> = [:]
+    var tableview: UITableView = UITableView.init()
+    var nameRecieve = Dictionary<String,Array<String>>()
+    var sortedArray = Array<String>(){didSet{
+        namerecieveMaking()
         tableview.reloadData()
         }}
-    var tableview: UITableView = UITableView.init()
-    var nameRecieve: Array<String> = []
     var row: Int = 0
+    var section: Int = 0
+    var folderCount:Dictionary<String,Int> = ["로드 중":0] {didSet {
+    self.sortedArray = Array(SharedVariable.Shared.folderCount.keys).sorted()
+    }}
+    func namerecieveMaking() {
+        for i in 0...folderCount.count - 1{
+            nameRecieve[sortedArray[i]] =  Array(self.valueLast[sortedArray[i]]!.keys).sorted(by: dicDateSortFunc(s1:s2:))
+        }
+    }
     func dicDateSortFunc (s1: String, s2: String) -> Bool {
         let d1 = self.valueLast[s1]?["날짜"]
         let d2 = self.valueLast[s2]?["날짜"]
@@ -62,6 +74,7 @@ class SharedVariable:NSObject  {
         }
         
     }
+    
     func showToast(_ message : String,_ view: UIView) {
         let width_variable:CGFloat = 10
         let toastLabel = UILabel(frame: CGRect(x: width_variable, y: view.frame.size.height-100, width: view.frame.size.width-2*width_variable, height: 35))
@@ -107,7 +120,4 @@ class SharedVariable:NSObject  {
         }
      
     }
-
-    
-    
 }

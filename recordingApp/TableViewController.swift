@@ -31,6 +31,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     var tableviewFooter : UIView!
     var button : UIButton!
     
+    
     @IBOutlet var editButton: UIButton!
     @IBOutlet var tableview: UITableView!
     @IBOutlet var menuButton: UIButton!
@@ -124,7 +125,8 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
 //    }
     func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
-        return 1
+        
+        return SharedVariable.Shared.folderCount.count
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -132,7 +134,8 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         //        if let counts = self.value?.count {
         //        return counts
         //        }
-        return SharedVariable.Shared.valueLast.count
+        return SharedVariable.Shared.folderCount[SharedVariable.Shared.sortedArray[section]]!
+        
     }
 //    func visibleChange(_ target: String,_ cell: WaitTableViewCell,_ letter : String)
 //    {
@@ -186,7 +189,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         return UITableView.automaticDimension
     }
     
-    func datePresent(date: Date,name: String) -> String{
+    func datePresent(date: Date,name: String,section: String) -> String{
         let dateformatterD = DateFormatter()
         
         dateformatterD.dateFormat = "yyyy.MM.dd" // mm 이 아니라 MM 으로 구분 해주지 않으면 이상한 날짜로 들어감
@@ -199,7 +202,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         // ko locale 설정시 하루 차이 나버림 .
         // 기본 date 는 default 는 15시간 차이(설정 안 했을때)
         let nowdate = dateformatterD.string(from: date)
-        if let d1 = SharedVariable.Shared.valueLast[name]!["날짜"] {
+        if let d1 = SharedVariable.Shared.valueLast[section]![name]!["날짜"] {
            
             let d1date: Date = dateformatterD.date(from: d1 )!
             
@@ -209,35 +212,37 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
             
             if  d1date == nowdate {
                 
-                return SharedVariable.Shared.valueLast[name]!["시간"]!
+                return SharedVariable.Shared.valueLast[section]![name]!["시간"]!
                 
             } else if (nowdate-604800 <= d1date &&  d1date < nowdate-86400) || (d1date >= nowdate+86400 && d1date < nowdate+604800){// 어제는 따로 , 일주일 전까지
                 
-                return SharedVariable.Shared.valueLast[name]!["요일"]!
+                return SharedVariable.Shared.valueLast[section]![name]!["요일"]!
                 
             } else if nowdate-86400 <= d1date, d1date < nowdate+86400{
                 
                 return "어제"
             } else {
                 
-                return SharedVariable.Shared.valueLast[name]!["날짜"]!
+                return SharedVariable.Shared.valueLast[section]![name]!["날짜"]!
             }
         } else {
             return "error"
         } //  연산 한꺼번에 b<a<c쓰면 오류, b<a,a<c 로 따로.
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
-    {   let date = Date()
-        let name = SharedVariable.Shared.nameRecieve[indexPath.row]
+    {   
+        let date = Date()
+        let sectionName = SharedVariable.Shared.sortedArray[indexPath.section]
+        let name = SharedVariable.Shared.nameRecieve[sectionName]![indexPath.row]
         if indexPath.row == selected?.row, onOff == 0{
         let cell =  tableview.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! WaitTableViewCell
 //        visibleChange("select", cell,"cell")
         
         
-        cell.fileName?.text = SharedVariable.Shared.valueLast[name]!["파일이름"]
-        cell.fileDate?.text = datePresent(date: date, name: name)
+        cell.fileName?.text = SharedVariable.Shared.valueLast[sectionName]![name]!["파일이름"]
+            cell.fileDate?.text = datePresent(date: date, name: name, section: sectionName)
         cell.hideKey?.text = name
-        cell.endTime?.text = SharedVariable.Shared.valueLast[name]!["재생시간"]
+        cell.endTime?.text = SharedVariable.Shared.valueLast[sectionName]![name]!["재생시간"]
         
         // 특정 cell만 바꾼 cell 을 내놔야 하는데
         return cell
@@ -246,10 +251,10 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         
 //        status["cell"] = "select"
         
-        let name = SharedVariable.Shared.nameRecieve[indexPath.row]
-        cell.fileNameWait?.text = SharedVariable.Shared.valueLast[name]!["파일이름"]
-        cell.fileDateWait?.text = datePresent(date: date, name: name)
-        cell.filePlayTimeWait?.text = SharedVariable.Shared.valueLast[name]!["재생시간"]
+        let name = SharedVariable.Shared.nameRecieve[sectionName]![indexPath.row]
+        cell.fileNameWait?.text = SharedVariable.Shared.valueLast[sectionName]![name]!["파일이름"]
+        cell.fileDateWait?.text = datePresent(date: date, name: name, section: sectionName)
+        cell.filePlayTimeWait?.text = SharedVariable.Shared.valueLast[sectionName]![name]!["재생시간"]
         cell.hideKey?.text = name
         
         
@@ -258,9 +263,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         
         
     }
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        <#code#>
-    }
+    
     func equalStopButton
         (cell:WaitTableViewCell){
         cell.buttonState(true, pause: false, stop: false)
@@ -273,14 +276,16 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         cell.progressView.progress = 0
         
     }
-   
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return SharedVariable.Shared.sortedArray[section]
+    }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
     
     {
         if onOff == 0 {
          SharedVariable.Shared.row = indexPath.row
-        
+            SharedVariable.Shared.section = indexPath.section
         
         SharedVariable.Shared.tableview = tableview
         
@@ -359,6 +364,40 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         refreshcontrol.endRefreshing()
     }
     
+    
+    @objc func deleteButtonAlert() {
+        let action = UIAlertController(title: "선택된 파일들을 삭제하시겠습니까?", message: "삭제된 파일들은 되돌릴 수 없습니다.", preferredStyle: .alert)
+        let cancelButton = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+        let deleteButton = UIAlertAction(title: "삭제", style: .default,handler: {(UIAlertAction)->() in
+            self.button.isEnabled = false
+            let lists = self.tableview.indexPathsForSelectedRows
+        let storage = Storage.storage()
+        let storageref = storage.reference()
+        let database = Database.database()
+        let ref = database.reference()
+        if lists != nil , let lists = lists {
+            
+            let temporary = FileManager.default.temporaryDirectory
+        for list in lists {
+            let sectionName = SharedVariable.Shared.sortedArray[list.section]
+            let hideKey = SharedVariable.Shared.nameRecieve[sectionName]![list.row]
+            do{ try FileManager.default.removeItem(at: temporary.appendingPathComponent("\(hideKey).m4a"))
+                } catch {
+                    print("remove error")
+            }
+                
+                storageref.child("Recordings").child("이전").child("\(hideKey).m4a").delete(completion: {(Error) -> () in print(Error)})
+            ref.child("FileNames").child("\(sectionName)").child(hideKey).removeValue()
+                
+            SharedVariable.Shared.valueLast[sectionName]?.removeValue(forKey: hideKey)
+            
+            }
+        }
+        })
+        action.addAction(cancelButton)
+        action.addAction(deleteButton)
+        self.present(action, animated: true)
+    }
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -389,39 +428,6 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         button.addTarget(self, action: #selector(deleteButtonAlert), for: .touchUpInside)
         
         
-    }
-    @objc func deleteButtonAlert() {
-        let action = UIAlertController(title: "선택된 파일들을 삭제하시겠습니까?", message: "삭제된 파일들은 되돌릴 수 없습니다.", preferredStyle: .alert)
-        let cancelButton = UIAlertAction(title: "취소", style: .cancel, handler: nil)
-        let deleteButton = UIAlertAction(title: "삭제", style: .default,handler: {(UIAlertAction)->() in
-            self.button.isEnabled = false
-            let lists = self.tableview.indexPathsForSelectedRows
-        let storage = Storage.storage()
-        let storageref = storage.reference()
-        let database = Database.database()
-        let ref = database.reference()
-        if lists != nil , let lists = lists {
-            
-            let temporary = FileManager.default.temporaryDirectory
-        for list in lists {
-            
-            let hideKey = SharedVariable.Shared.nameRecieve[list.row]
-            do{ try FileManager.default.removeItem(at: temporary.appendingPathComponent("\(hideKey).m4a"))
-                } catch {
-                    print("remove error")
-            }
-                
-                storageref.child("Recordings").child("이전").child("\(hideKey).m4a").delete(completion: {(Error) -> () in print(Error)})
-                ref.child("FileNames").child(hideKey).removeValue()
-                
-                SharedVariable.Shared.valueLast.removeValue(forKey: hideKey)
-            
-            }
-        }
-        })
-        action.addAction(cancelButton)
-        action.addAction(deleteButton)
-        self.present(action, animated: true)
     }
     override func viewWillAppear(_ animated: Bool)
     {

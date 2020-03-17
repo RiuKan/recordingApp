@@ -16,6 +16,11 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
     
     
     
+    var nowFolder: String = "기본폴더"
+    var Folders: Dictionary<String,Int>! {didSet{
+        tableview.reloadData()
+        }}
+    var tableview: UITableView!
     var progressTimer : Timer! // 타이머
     var ref:DatabaseReference! //실시간데이터 레퍼
     var storageRef: StorageReference! //스토리지 레퍼
@@ -53,15 +58,28 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
     @IBOutlet weak var recordButton: UIButton!
     
     @IBOutlet weak var recordingTime: UILabel!
-    @IBOutlet weak var folderSelectorView : UIView!
-    @IBOutlet weak var arrowButtonImage: UIImage!
+    @IBOutlet weak var folderSelectorView : UIButton!
+    @IBOutlet weak var arrowButtonImage: UIButton!
     
-    @IBAction func selectorByTwo(_ sender1:UIView,_ sender2: UIImage) {
-        if sender1.tag == 1 || sender2.{
-            
+    @IBAction func selectorByTwo(_ sender1:UIButton) {
+        if sender1.tag == 1 {
+            if self.view.subviews.contains(tableview) == false {
+            self.view.addSubview(self.tableview)
+                UIView.animate(withDuration: 0.2, animations: {()->Void in self.tableview.frame.size.height = 100})
+//                folderSelectorView.addTarget(folderSelectorView, action: #selector(outsideClick), for: .touchUpOutside)
+            } else {
+                self.tableview.frame.size.height = 0
+                self.tableview.removeFromSuperview()
+                
+            }
         }
+        
     }
-    // selectRecordAudiofile() 로 불러온 주소에
+    @objc func outsideClick () {
+        self.tableview.removeFromSuperview()
+    }
+    
+// selectRecordAudiofile() 로 불러온 주소에
     // 레코딩 장전
     func prepareRecording() {
         let recordSettings = [
@@ -125,7 +143,12 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
     func findVacancy() -> Int{
         
         var i = 0
-        let lists:[Int] = listMaking(SharedVariable.Shared.valueLast)
+        if SharedVariable.Shared.valueLast.count != 0 {
+        var lists = [Int]()
+        for folder in SharedVariable.Shared.folderCount.keys {
+            let list:[Int] = listMaking(SharedVariable.Shared.valueLast[folder]!)
+            lists.append(contentsOf: list)
+        }
         while true {
                 if lists.firstIndex(of: i) == nil {
                     break
@@ -133,6 +156,8 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
                         i = i+1
                 }
         
+        }
+            return i
         }
         return i
     }
@@ -156,19 +181,25 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
         
         let storage = Storage.storage()
           storageRef = storage.reference()
-        let key = ref.child("FileNames").childByAutoId().key
+        let key = ref.child("FileNames").child("\(nowFolder)").childByAutoId().key
         
         
         if let year = components.year, let month = components.month, let day = components.day, let weekday = components.weekday, let dayOfWeek = list[weekday], let playTime = playTime, let key = key
         {
-            self.ref.child("FileNames/\(key)").updateChildValues(["날짜":"\(year).\(month).\(day)","요일": dayOfWeek,"번호":"\(yes)","재생시간":"\(playTime)","파일이름":"recordFile\(yes)","시간":"\(time)"
+            self.ref.child("FileNames/\(self.nowFolder)/\(key)").updateChildValues(["날짜":"\(year).\(month).\(day)","요일": dayOfWeek,"번호":"\(yes)","재생시간":"\(playTime)","파일이름":"recordFile\(yes)","시간":"\(time)"
             ], withCompletionBlock: { (Error:Error?, DatabaseReference:DatabaseReference) in
                 print(Error)
             }) // if let 에서 nil 값을 넣으면  error 도 안뜨고 안넣어짐 if let 을 안 들어오는 듯
             
             
             
-            SharedVariable.Shared.valueLast[key] = ["날짜":"\(year).\(month).\(day)","요일": dayOfWeek,"번호":"\(yes)","재생시간":"\(playTime)","파일이름":"recordFile\(yes)","시간":"\(time)"]
+            SharedVariable.Shared.valueLast[nowFolder] = [key: ["날짜":"\(year).\(month).\(day)","요일": dayOfWeek,"번호":"\(yes)","재생시간":"\(playTime)","파일이름":"recordFile\(yes)","시간":"\(time)"]]
+                
+            
+            self.ref.child("Folders").updateChildValues([nowFolder:SharedVariable.Shared.valueLast[nowFolder]?.count
+            ], withCompletionBlock: { (Error:Error?, DatabaseReference:DatabaseReference) in
+                print(Error)
+            })
             
         
             
@@ -226,20 +257,25 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
         prepareRecording()
         recordButton.isEnabled = true
     }
-    func loadFromFireBase(completionHandler:@escaping () -> ()){
+    func loadFromFireBase(){
         
         let database = Database.database()
         self.ref = database.reference()
-        self.ref.child("FileNames").observeSingleEvent(of: .value, with: {(snapshot) in
+        self.ref.observeSingleEvent(of: .value, with: {(snapshot) in
             
-            if let value = snapshot.value as? Dictionary<String,Dictionary<String,String>> {
+            let value1 = snapshot.childSnapshot(forPath: "FileNames").value as? Dictionary<String,Dictionary<String,Dictionary<String,String>>>
+            let value2 = snapshot.childSnapshot(forPath: "Folders").value as! Dictionary<String,Int>
+            
+            guard let value11 = value1 else { return }
+            SharedVariable.Shared.valueLast = value11
+                    
+                self.Folders = value2
+            SharedVariable.Shared.folderCount = value2
                 
-                SharedVariable.Shared.valueLast = value
-                completionHandler()
                 
                 
                 
-            }
+            
         }
         ) { (error) in
             print(error.localizedDescription)
@@ -250,16 +286,29 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
     override func viewDidLoad() {
         
         
-        loadFromFireBase( ){
-            
+            loadFromFireBase()
+            initPlay()
+        self.folderSelectorView.layer.borderColor = UIColor.black.cgColor
+        self.folderSelectorView.layer.cornerRadius = 7
+            self.folderSelectorView.layer.borderWidth = 1
+            let folderSelectorViewOrigin = self.folderSelectorView.frame.origin
+            let folderSelectorViewSize = self.folderSelectorView.frame.size
+            self.tableview = UITableView.init(frame: CGRect.init(x: folderSelectorViewOrigin.x, y: folderSelectorViewOrigin.y + folderSelectorViewSize.height, width: folderSelectorViewSize.width, height: 0), style: .plain)
+        self.tableview.layer.borderWidth = 1
+        self.tableview.layer.cornerRadius = 7
+        self.tableview.layer.borderColor = UIColor.black.cgColor
+        self.tableview.backgroundColor = UIColor.gray
+        self.tableview.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+            self.tableview.cellLayoutMarginsFollowReadableWidth = false
+            self.tableview.separatorInset.left = 0
+        
+            self.tableview.delegate = self
+            self.tableview.dataSource = self
             
             super.viewDidLoad()
             
-            self.folderSelectorView.layer.cornerRadius = 7
-            self.folderSelectorView.layer.borderWidth = 1
             
-    
-        }
+        
         
         
         
@@ -280,4 +329,41 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
 
 
 }
+extension ViewController: UITableViewDelegate, UITableViewDataSource {
+    
+        
+        func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+            if Folders == nil {
+                return 1
+            } else {
+                return Folders.count + 1
+            }
+        }
+        
+        func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+            let cell = UITableViewCell.init(style: .default, reuseIdentifier: "cell")
+            if Folders != nil {
+            if  indexPath.row == Folders.count {
+                cell.textLabel!.text = "폴더 추가..."
+                cell.textLabel!.textColor = UIColor.lightGray
+                return cell
+            } else {
+            
+            let list = Array(Folders.keys)
+            cell.textLabel!.text = list[indexPath.row]
+            }
+            return cell
+            
+            } else {
+                return cell
+            }
+            
+        }
+    func tableview (_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if indexPath.row == Folders.count {
+            
+        }
+    }
+    
 
+}
