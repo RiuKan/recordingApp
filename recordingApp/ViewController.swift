@@ -193,13 +193,10 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
             
             
             
-            SharedVariable.Shared.valueLast[nowFolder] = [key: ["날짜":"\(year).\(month).\(day)","요일": dayOfWeek,"번호":"\(yes)","재생시간":"\(playTime)","파일이름":"recordFile\(yes)","시간":"\(time)"]]
+            SharedVariable.Shared.valueLast[nowFolder]?.updateValue(["날짜":"\(year).\(month).\(day)","요일": dayOfWeek,"번호":"\(yes)","재생시간":"\(playTime)","파일이름":"recordFile\(yes)","시간":"\(time)"], forKey: key)
                 
-            
-            self.ref.child("Folders").updateChildValues([nowFolder:SharedVariable.Shared.valueLast[nowFolder]?.count
-            ], withCompletionBlock: { (Error:Error?, DatabaseReference:DatabaseReference) in
-                print(Error)
-            })
+            SharedVariable.Shared.folderCount.updateValue(SharedVariable.Shared.valueLast[nowFolder]!.count, forKey: nowFolder)
+            self.ref.child("Folders").setValue([nowFolder:SharedVariable.Shared.valueLast[nowFolder]!.count] )
             
         
             
@@ -270,8 +267,9 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
             SharedVariable.Shared.valueLast = value11
                     
                 self.Folders = value2
+            if value2 != nil {
             SharedVariable.Shared.folderCount = value2
-                
+            }
                 
                 
                 
@@ -304,7 +302,7 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
         
             self.tableview.delegate = self
             self.tableview.dataSource = self
-            
+        
             super.viewDidLoad()
             
             
@@ -331,22 +329,33 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
 }
 extension ViewController: UITableViewDelegate, UITableViewDataSource {
     
+    
+    
         
         func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
             if Folders == nil {
                 return 1
             } else {
-                return Folders.count + 1
+                if tableview.isEditing == false {
+                    return Folders.count + 1
+                } else {
+                    return Folders.count + 2
             }
         }
-        
+    }
         func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
             let cell = UITableViewCell.init(style: .default, reuseIdentifier: "cell")
             if Folders != nil {
-            if  indexPath.row == Folders.count {
-                cell.textLabel!.text = "폴더 추가..."
+                
+            if  indexPath.row == Folders.count,tableview.isEditing == false {
+                cell.textLabel!.text = "폴더 편집"
                 cell.textLabel!.textColor = UIColor.lightGray
                 return cell
+            } else if tableview.isEditing == true ,indexPath.row == Folders.count + 1 {
+            cell.textLabel!.text = "폴더 추가"
+                cell.textLabel!.textColor = UIColor.lightGray
+            return cell
+                
             } else {
             
             let list = Array(Folders.keys)
@@ -359,11 +368,55 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
             }
             
         }
-    func tableview (_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if indexPath.row == Folders.count {
+    func tableView (_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if indexPath.row == Folders.count,tableview.isEditing == false {
+            
+            tableview.setEditing(true, animated: false)
+            
+            
+        } else if indexPath.row == Folders.count + 1, tableview.isEditing == true  {
+                        let alert = UIAlertController.init(title: "폴더추가", message: "추가할 폴더의 이름을 적으시오.", preferredStyle: .alert)
+                        let cancleAction = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+            let confirmAction = UIAlertAction(title: "생성", style: .default) { (UIAlertAction) in
+                
+                guard let text = alert.textFields?[0].text else {return}
+                
+                let database = Database.database()
+                self.ref = database.reference()
+                self.ref.child("Folders").setValue([text:0])
+                SharedVariable.Shared.folderCount.updateValue(0, forKey: text)
+                
+            }
+        }else if tableview.isEditing == false {
+            let cell = tableview.cellForRow(at: indexPath)
+            
+            guard let folderName = cell?.textLabel?.text else{return}
+            nowFolder = folderName
             
         }
-    }
-    
 
+        }
+    
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        if indexPath.row < Folders.count {
+        return .delete
+        } else {
+            return .none
+        }
+    }
 }
+
+            // 커스텀 ui로 하려고함.
+//            let viewsize = self.view.frame.size
+//            let addingFolderView = UIView.init(frame: CGRect(x: viewsize.width/2-3*viewsize.width/8, y: viewsize.height/2-viewsize.height/10, width: 3*viewsize.width/4, height: viewsize.height/5))
+//            addingFolderView.backgroundColor = UIColor.white
+//            addingFolderView.layer.borderColor = UIColor.gray.cgColor
+//            addingFolderView.layer.borderWidth = 1
+//            let textField = UITextField.init(frame: CGRect(x: , y: , width: , height: ))
+//            textField.backgroundColor = UIColor.white
+//            textField.layer.borderColor = UIColor.black.cgColor
+//            textField.layer.borderWidth = 0.5
+//
+//            self.view.addSubview(addingFolderView)
+//            addingFolderView.addSubview(textField)
+            

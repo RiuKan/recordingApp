@@ -84,6 +84,7 @@ class WaitTableViewCell: UITableViewCell, AVAudioPlayerDelegate, UINavigationCon
         { url, error in
             if let error = error
             {   SharedVariable.Shared.showToast("there is no file ",(self.window?.rootViewController!.view)!)
+                self.stopFunction()
             
             }
             else

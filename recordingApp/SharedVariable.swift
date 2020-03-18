@@ -14,7 +14,7 @@ class SharedVariable:NSObject {
     
     var audioPlayer: AVAudioPlayer!
     var nameOfFile: String!
-    var valueLast: Dictionary<String,Dictionary<String, Dictionary<String, String>>> = [:]
+    var valueLast: Dictionary<String,Dictionary<String, Dictionary<String, String>>> = [:] 
     var tableview: UITableView = UITableView.init()
     var nameRecieve = Dictionary<String,Array<String>>()
     var sortedArray = Array<String>(){didSet{
@@ -26,16 +26,18 @@ class SharedVariable:NSObject {
     var folderCount:Dictionary<String,Int> = ["로드 중":0] {didSet {
     self.sortedArray = Array(SharedVariable.Shared.folderCount.keys).sorted()
     }}
+    var sortedArrayi: String!
     func namerecieveMaking() {
         for i in 0...folderCount.count - 1{
-            nameRecieve[sortedArray[i]] =  Array(self.valueLast[sortedArray[i]]!.keys).sorted(by: dicDateSortFunc(s1:s2:))
+            sortedArrayi = sortedArray[i]
+            nameRecieve[sortedArrayi] =  Array(self.valueLast[sortedArrayi]!.keys).sorted(by: dicDateSortFunc(s1:s2:))
         }
     }
     func dicDateSortFunc (s1: String, s2: String) -> Bool {
-        let d1 = self.valueLast[s1]?["날짜"]
-        let d2 = self.valueLast[s2]?["날짜"]
-        let t1 = self.valueLast[s1]?["시간"]
-        let t2 = self.valueLast[s2]?["시간"]
+        let d1 = self.valueLast[sortedArrayi]?[s1]?["날짜"]
+        let d2 = self.valueLast[sortedArrayi]?[s2]?["날짜"]
+        let t1 = self.valueLast[sortedArrayi]?[s1]?["시간"]
+        let t2 = self.valueLast[sortedArrayi]?[s2]?["시간"]
         
         var result1 : Date!
         var result2 : Date!

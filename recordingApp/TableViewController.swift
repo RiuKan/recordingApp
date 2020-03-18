@@ -134,7 +134,11 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         //        if let counts = self.value?.count {
         //        return counts
         //        }
+        if SharedVariable.Shared.valueLast.count != 0, SharedVariable.Shared.sortedArray.count != 0 {
         return SharedVariable.Shared.folderCount[SharedVariable.Shared.sortedArray[section]]!
+        } else {
+            return 0
+        }
         
     }
 //    func visibleChange(_ target: String,_ cell: WaitTableViewCell,_ letter : String)
@@ -230,12 +234,19 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         } //  연산 한꺼번에 b<a<c쓰면 오류, b<a,a<c 로 따로.
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
-    {   
+        
+    {
+        
+        
         let date = Date()
         let sectionName = SharedVariable.Shared.sortedArray[indexPath.section]
         let name = SharedVariable.Shared.nameRecieve[sectionName]![indexPath.row]
         if indexPath.row == selected?.row, onOff == 0{
-        let cell =  tableview.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! WaitTableViewCell
+            
+            let cell =  tableview.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! WaitTableViewCell
+            
+            if SharedVariable.Shared.valueLast.count != 0{
+        
 //        visibleChange("select", cell,"cell")
         
         
@@ -246,9 +257,14 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         
         // 특정 cell만 바꾼 cell 을 내놔야 하는데
         return cell
-    }else{
-        cell = tableview.dequeueReusableCell(withIdentifier: "sample", for: indexPath) as! WaitTableViewCell
+        }else {
+            return cell
+        }
         
+    }else{
+            
+        cell = tableview.dequeueReusableCell(withIdentifier: "sample", for: indexPath) as! WaitTableViewCell
+        if SharedVariable.Shared.valueLast.count != 0{
 //        status["cell"] = "select"
         
         let name = SharedVariable.Shared.nameRecieve[sectionName]![indexPath.row]
@@ -259,6 +275,9 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         
         
         return cell
+        } else {
+            return cell
+            }
         }
         
         
@@ -277,7 +296,13 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         
     }
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return SharedVariable.Shared.sortedArray[section]
+        if SharedVariable.Shared.sortedArray.count != 0 {
+            return SharedVariable.Shared.sortedArray[section]
+        } else {
+            return "no file..."
+        }
+        
+        
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
