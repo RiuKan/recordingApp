@@ -18,7 +18,9 @@ class SharedVariable:NSObject {
     var tableview: UITableView = UITableView.init()
     var nameRecieve = Dictionary<String,Array<String>>()
     var sortedArray = Array<String>(){didSet{
+        
         namerecieveMaking()
+        
         tableview.reloadData()
         }}
     var row: Int = 0
@@ -30,7 +32,12 @@ class SharedVariable:NSObject {
     func namerecieveMaking() {
         for i in 0...folderCount.count - 1{
             sortedArrayi = sortedArray[i]
+            if self.valueLast.keys.contains(sortedArrayi) == true {
             nameRecieve[sortedArrayi] =  Array(self.valueLast[sortedArrayi]!.keys).sorted(by: dicDateSortFunc(s1:s2:))
+            }else{
+                self.valueLast[sortedArrayi] = Dictionary<String,Dictionary<String,String>>()
+                nameRecieve[sortedArrayi] = Array<String>()
+            }
         }
     }
     func dicDateSortFunc (s1: String, s2: String) -> Bool {

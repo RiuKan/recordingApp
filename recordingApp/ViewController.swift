@@ -195,8 +195,15 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
             
             SharedVariable.Shared.valueLast[nowFolder]?.updateValue(["날짜":"\(year).\(month).\(day)","요일": dayOfWeek,"번호":"\(yes)","재생시간":"\(playTime)","파일이름":"recordFile\(yes)","시간":"\(time)"], forKey: key)
                 
-            SharedVariable.Shared.folderCount.updateValue(SharedVariable.Shared.valueLast[nowFolder]!.count, forKey: nowFolder)
-            self.ref.child("Folders").setValue([nowFolder:SharedVariable.Shared.valueLast[nowFolder]!.count] )
+            if SharedVariable.Shared.nameRecieve.keys.contains(nowFolder) == true {
+                var merged:Array<String>? = SharedVariable.Shared.nameRecieve[nowFolder]
+                merged?.insert(key, at: 0)
+                guard let merged1 = merged else{return}
+                SharedVariable.Shared.nameRecieve.updateValue(merged1, forKey: nowFolder)
+            } else {
+                SharedVariable.Shared.nameRecieve.updateValue([key], forKey: nowFolder)
+            }
+            
             
         
             
@@ -261,18 +268,22 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
         self.ref.observeSingleEvent(of: .value, with: {(snapshot) in
             
             let value1 = snapshot.childSnapshot(forPath: "FileNames").value as? Dictionary<String,Dictionary<String,Dictionary<String,String>>>
-            let value2 = snapshot.childSnapshot(forPath: "Folders").value as! Dictionary<String,Int>
+            
             
             guard let value11 = value1 else { return }
             SharedVariable.Shared.valueLast = value11
                     
-                self.Folders = value2
-            if value2 != nil {
-            SharedVariable.Shared.folderCount = value2
-            }
-                
-                
-                
+            
+            
+            var temp: Dictionary<String,Int> = [:]
+                for folder in SharedVariable.Shared.valueLast.keys {
+                    let list:Int = SharedVariable.Shared.valueLast[folder]!.count
+                    temp.updateValue(list, forKey: folder)
+                 }
+            SharedVariable.Shared.folderCount = temp
+            
+            self.Folders = SharedVariable.Shared.folderCount
+            
             
         }
         ) { (error) in
@@ -302,6 +313,8 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
         
             self.tableview.delegate = self
             self.tableview.dataSource = self
+        self.tableview.allowsSelectionDuringEditing = true
+        self.folderSelectorView.setTitle(nowFolder, for: .normal)
         
             super.viewDidLoad()
             
@@ -333,32 +346,32 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     
         
         func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-            if Folders == nil {
+            if SharedVariable.Shared.folderCount == nil {
                 return 1
             } else {
                 if tableview.isEditing == false {
-                    return Folders.count + 1
+                    return SharedVariable.Shared.folderCount.count + 1
                 } else {
-                    return Folders.count + 2
+                    return SharedVariable.Shared.folderCount.count + 2
             }
         }
     }
         func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
             let cell = UITableViewCell.init(style: .default, reuseIdentifier: "cell")
-            if Folders != nil {
+            if SharedVariable.Shared.folderCount != nil {
                 
-            if  indexPath.row == Folders.count,tableview.isEditing == false {
+            if  indexPath.row == SharedVariable.Shared.folderCount.count,tableview.isEditing == false {
                 cell.textLabel!.text = "폴더 편집"
                 cell.textLabel!.textColor = UIColor.lightGray
                 return cell
-            } else if tableview.isEditing == true ,indexPath.row == Folders.count + 1 {
+            } else if tableview.isEditing == true ,indexPath.row == SharedVariable.Shared.folderCount.count + 1 {
             cell.textLabel!.text = "폴더 추가"
                 cell.textLabel!.textColor = UIColor.lightGray
             return cell
                 
             } else {
             
-            let list = Array(Folders.keys)
+            let list = Array(SharedVariable.Shared.folderCount.keys)
             cell.textLabel!.text = list[indexPath.row]
             }
             return cell
@@ -369,12 +382,13 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
             
         }
     func tableView (_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if indexPath.row == Folders.count,tableview.isEditing == false {
+        tableview.deselectRow(at: indexPath, animated: true)
+        if indexPath.row == SharedVariable.Shared.folderCount.count,tableview.isEditing == false {
             
-            tableview.setEditing(true, animated: false)
+            self.tableview.setEditing(true, animated: true)
             
             
-        } else if indexPath.row == Folders.count + 1, tableview.isEditing == true  {
+        } else if indexPath.row == SharedVariable.Shared.folderCount.count, tableview.isEditing == true  {
                         let alert = UIAlertController.init(title: "폴더추가", message: "추가할 폴더의 이름을 적으시오.", preferredStyle: .alert)
                         let cancleAction = UIAlertAction(title: "취소", style: .cancel, handler: nil)
             let confirmAction = UIAlertAction(title: "생성", style: .default) { (UIAlertAction) in
@@ -383,22 +397,31 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
                 
                 let database = Database.database()
                 self.ref = database.reference()
-                self.ref.child("Folders").setValue([text:0])
+                
                 SharedVariable.Shared.folderCount.updateValue(0, forKey: text)
+                self.tableview.setEditing(false, animated: true)
+                self.tableview.reloadData()
                 
             }
+            alert.addTextField { (UITextField) in
+                
+            }
+            alert.addAction(cancleAction)
+            alert.addAction(confirmAction)
+            present(alert,animated: true)
         }else if tableview.isEditing == false {
             let cell = tableview.cellForRow(at: indexPath)
             
             guard let folderName = cell?.textLabel?.text else{return}
             nowFolder = folderName
-            
+            folderSelectorView.setTitle(folderName, for: .normal)
+            self.tableview.removeFromSuperview()
         }
 
         }
     
     func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
-        if indexPath.row < Folders.count {
+        if indexPath.row < SharedVariable.Shared.folderCount.count {
         return .delete
         } else {
             return .none

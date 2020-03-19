@@ -135,7 +135,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         //        return counts
         //        }
         if SharedVariable.Shared.valueLast.count != 0, SharedVariable.Shared.sortedArray.count != 0 {
-        return SharedVariable.Shared.folderCount[SharedVariable.Shared.sortedArray[section]]!
+            return SharedVariable.Shared.valueLast[SharedVariable.Shared.sortedArray[section]]!.count
         } else {
             return 0
         }
@@ -239,8 +239,10 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         
         
         let date = Date()
+        
         let sectionName = SharedVariable.Shared.sortedArray[indexPath.section]
         let name = SharedVariable.Shared.nameRecieve[sectionName]![indexPath.row]
+        
         if indexPath.row == selected?.row, onOff == 0{
             
             let cell =  tableview.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! WaitTableViewCell
@@ -395,7 +397,9 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         let cancelButton = UIAlertAction(title: "취소", style: .cancel, handler: nil)
         let deleteButton = UIAlertAction(title: "삭제", style: .default,handler: {(UIAlertAction)->() in
             self.button.isEnabled = false
+            
             let lists = self.tableview.indexPathsForSelectedRows
+            
         let storage = Storage.storage()
         let storageref = storage.reference()
         let database = Database.database()
@@ -415,8 +419,18 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
             ref.child("FileNames").child("\(sectionName)").child(hideKey).removeValue()
                 
             SharedVariable.Shared.valueLast[sectionName]?.removeValue(forKey: hideKey)
+            var temp:Array<String> = SharedVariable.Shared.nameRecieve[sectionName]!
+           
+            temp.remove(at: temp.firstIndex(of: hideKey)!)
+            
+            SharedVariable.Shared.nameRecieve[sectionName] = temp
+            
+               
+            
+            
             
             }
+             self.tableview.deleteRows(at: lists, with: .automatic)
         }
         })
         action.addAction(cancelButton)
