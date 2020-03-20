@@ -243,7 +243,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         let sectionName = SharedVariable.Shared.sortedArray[indexPath.section]
         let name = SharedVariable.Shared.nameRecieve[sectionName]![indexPath.row]
         
-        if indexPath.row == selected?.row, onOff == 0{
+        if indexPath == selected, onOff == 0{
             
             let cell =  tableview.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! WaitTableViewCell
             
@@ -331,7 +331,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         }
         else
         {
-            if  indexPath.row != selected.row {
+            if  indexPath != selected{
                 
                 
                

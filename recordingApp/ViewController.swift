@@ -66,17 +66,24 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
             if self.view.subviews.contains(tableview) == false {
             self.view.addSubview(self.tableview)
                 UIView.animate(withDuration: 0.2, animations: {()->Void in self.tableview.frame.size.height = 100})
-//                folderSelectorView.addTarget(folderSelectorView, action: #selector(outsideClick), for: .touchUpOutside)
+                folderSelectorView.addTarget(self, action: #selector(outsideClick), for: .touchUpOutside)
+                
             } else {
                 self.tableview.frame.size.height = 0
                 self.tableview.removeFromSuperview()
+                if self.tableview.isEditing == true {
+                    self.tableview.setEditing(false, animated: false)
+                }
+                tableview.reloadData()
                 
             }
         }
         
     }
     @objc func outsideClick () {
+        if self.view.subviews.contains(tableview) {
         self.tableview.removeFromSuperview()
+        }
     }
     
 // selectRecordAudiofile() 로 불러온 주소에
@@ -267,6 +274,8 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
         self.ref = database.reference()
         self.ref.observeSingleEvent(of: .value, with: {(snapshot) in
             
+            
+            
             let value1 = snapshot.childSnapshot(forPath: "FileNames").value as? Dictionary<String,Dictionary<String,Dictionary<String,String>>>
             
             
@@ -346,37 +355,39 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     
         
         func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-            if SharedVariable.Shared.folderCount == nil {
+            if SharedVariable.Shared.folderCount.count == 0{
                 return 1
             } else {
-                if tableview.isEditing == false {
+                
                     return SharedVariable.Shared.folderCount.count + 1
-                } else {
-                    return SharedVariable.Shared.folderCount.count + 2
+                
             }
         }
-    }
+    
         func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-            let cell = UITableViewCell.init(style: .default, reuseIdentifier: "cell")
-            if SharedVariable.Shared.folderCount != nil {
+            tableview.register(UITableViewCell.self, forCellReuseIdentifier: "default")
+            
+            if SharedVariable.Shared.folderCount.count != 0 {
                 
-            if  indexPath.row == SharedVariable.Shared.folderCount.count,tableview.isEditing == false {
-                cell.textLabel!.text = "폴더 편집"
-                cell.textLabel!.textColor = UIColor.lightGray
-                return cell
-            } else if tableview.isEditing == true ,indexPath.row == SharedVariable.Shared.folderCount.count + 1 {
-            cell.textLabel!.text = "폴더 추가"
-                cell.textLabel!.textColor = UIColor.lightGray
+                if  indexPath.row == SharedVariable.Shared.folderCount.count, tableview.isEditing == false {
+                    let cell = tableview.dequeueReusableCell(withIdentifier: "default",for:indexPath)
+                    cell.textLabel!.text = "폴더 편집"
+                    cell.textLabel!.textColor = UIColor.lightGray
+                    return cell
+            } else if tableview.isEditing == true ,indexPath.row == SharedVariable.Shared.folderCount.count  {
+                let cell = tableview.dequeueReusableCell(withIdentifier: "default",for:indexPath)
             return cell
                 
             } else {
-            
+            let cell = tableview.dequeueReusableCell(withIdentifier: "default",for:indexPath)
             let list = Array(SharedVariable.Shared.folderCount.keys)
             cell.textLabel!.text = list[indexPath.row]
+                    return cell
             }
-            return cell
+            
             
             } else {
+                let cell = tableview.dequeueReusableCell(withIdentifier: "default",for:indexPath)
                 return cell
             }
             
@@ -384,8 +395,11 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView (_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableview.deselectRow(at: indexPath, animated: true)
         if indexPath.row == SharedVariable.Shared.folderCount.count,tableview.isEditing == false {
-            
+            let cell = self.tableview.cellForRow(at: indexPath)
+            cell?.textLabel!.text = "폴더 추가"
+            cell?.textLabel!.textColor = UIColor.lightGray
             self.tableview.setEditing(true, animated: true)
+           
             
             
         } else if indexPath.row == SharedVariable.Shared.folderCount.count, tableview.isEditing == true  {
@@ -400,7 +414,11 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
                 
                 SharedVariable.Shared.folderCount.updateValue(0, forKey: text)
                 self.tableview.setEditing(false, animated: true)
-                self.tableview.reloadData()
+                let indexpath1: IndexPath = IndexPath.init(row: SharedVariable.Shared.folderCount.count-1, section: 0)
+                
+                self.tableview.insertRows(at: [indexpath1], with: .right)
+                
+                
                 
             }
             alert.addTextField { (UITextField) in
@@ -419,13 +437,18 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         }
 
         }
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        if indexPath.row < SharedVariable.Shared.folderCount.count {
+            return true
+        } else {
+            return false
+        }
+    }
     
     func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
-        if indexPath.row < SharedVariable.Shared.folderCount.count {
+         
         return .delete
-        } else {
-            return .none
-        }
+       
     }
 }
 
