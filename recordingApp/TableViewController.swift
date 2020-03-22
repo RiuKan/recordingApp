@@ -447,9 +447,10 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         tableview.delegate = self
         tableview.dataSource = self
         
+        refreshcontrol.addTarget(self, action: #selector(refresh), for: .valueChanged)
         tableview.refreshControl = refreshcontrol
         
-        refreshcontrol.addTarget(self, action: #selector(refresh), for: .valueChanged)
+        
         
          tableview.allowsMultipleSelectionDuringEditing =
         true
@@ -465,6 +466,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         tableviewFooter.addSubview(button)
         
         button.addTarget(self, action: #selector(deleteButtonAlert), for: .touchUpInside)
+        
         
         
     }

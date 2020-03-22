@@ -15,7 +15,7 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
     
     
     
-    
+    var backgroundView : UIView!
     var nowFolder: String = "기본폴더"
     var Folders: Dictionary<String,Int>! {didSet{
         tableview.reloadData()
@@ -59,30 +59,45 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
     
     @IBOutlet weak var recordingTime: UILabel!
     @IBOutlet weak var folderSelectorView : UIButton!
-    @IBOutlet weak var arrowButtonImage: UIButton!
+
     
     @IBAction func selectorByTwo(_ sender1:UIButton) {
         if sender1.tag == 1 {
             if self.view.subviews.contains(tableview) == false {
             self.view.addSubview(self.tableview)
                 UIView.animate(withDuration: 0.2, animations: {()->Void in self.tableview.frame.size.height = 100})
-                folderSelectorView.addTarget(self, action: #selector(outsideClick), for: .touchUpOutside)
+                
+                
+                
+                let touchGestureRecg = UITapGestureRecognizer(target: self, action: #selector(outsideClick(sender: )))
+                backgroundView = UIView.init(frame: self.view.window!.frame)
+               backgroundView.layer.zPosition = 0.5
+                backgroundView.addGestureRecognizer(touchGestureRecg)
+                self.view.addSubview(backgroundView)
+                self.view.bringSubviewToFront(tableview)
                 
             } else {
-                self.tableview.frame.size.height = 0
-                self.tableview.removeFromSuperview()
-                if self.tableview.isEditing == true {
-                    self.tableview.setEditing(false, animated: false)
+               folderTableDelete()
                 }
                 tableview.reloadData()
                 
             }
         }
         
-    }
-    @objc func outsideClick () {
-        if self.view.subviews.contains(tableview) {
+    
+    func folderTableDelete () {
+        self.tableview.frame.size.height = 0
         self.tableview.removeFromSuperview()
+        if tableview.isEditing == true {
+            tableview.setEditing(false, animated: false)
+    }
+}
+    
+    @objc func outsideClick (sender: UITapGestureRecognizer) {
+        if self.view.subviews.contains(tableview) {
+        folderTableDelete()
+            backgroundView.removeFromSuperview()
+            
         }
     }
     
@@ -324,6 +339,8 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
             self.tableview.dataSource = self
         self.tableview.allowsSelectionDuringEditing = true
         self.folderSelectorView.setTitle(nowFolder, for: .normal)
+        self.tableview.layer.zPosition = 999
+        self.folderSelectorView.layer.zPosition = 999
         
             super.viewDidLoad()
             
@@ -349,6 +366,7 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
 
 
 }
+
 extension ViewController: UITableViewDelegate, UITableViewDataSource {
     
     
@@ -404,7 +422,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
             
         } else if indexPath.row == SharedVariable.Shared.folderCount.count, tableview.isEditing == true  {
                         let alert = UIAlertController.init(title: "폴더추가", message: "추가할 폴더의 이름을 적으시오.", preferredStyle: .alert)
-                        let cancleAction = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+            let cancleAction = UIAlertAction(title: "취소", style: .cancel) {(UIAlertAction) in self.backgroundView.removeFromSuperview()}
             let confirmAction = UIAlertAction(title: "생성", style: .default) { (UIAlertAction) in
                 
                 guard let text = alert.textFields?[0].text else {return}
@@ -433,6 +451,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
             guard let folderName = cell?.textLabel?.text else{return}
             nowFolder = folderName
             folderSelectorView.setTitle(folderName, for: .normal)
+            backgroundView.removeFromSuperview()
             self.tableview.removeFromSuperview()
         }
 

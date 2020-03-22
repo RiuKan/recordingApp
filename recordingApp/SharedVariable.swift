@@ -25,8 +25,9 @@ class SharedVariable:NSObject {
         }}
     var row: Int = 0
     var section: Int = 0
-    var folderCount:Dictionary<String,Int> = ["로드 중":0] {didSet {
+    var folderCount = Dictionary<String,Int>() {didSet {
     self.sortedArray = Array(SharedVariable.Shared.folderCount.keys).sorted()
+        
     }}
     var sortedArrayi: String!
     func namerecieveMaking() {
