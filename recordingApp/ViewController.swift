@@ -292,11 +292,14 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
             
             
             let value1 = snapshot.childSnapshot(forPath: "FileNames").value as? Dictionary<String,Dictionary<String,Dictionary<String,String>>>
+            let valueFolders = snapshot.childSnapshot(forPath:"폴더순서").value as? Array<String>
+            
+            guard let value11 = value1 else { return print("error") }
+            guard let folderOrdering = valueFolders else{ return }
             
             
-            guard let value11 = value1 else { return }
             SharedVariable.Shared.valueLast = value11
-                    
+            
             
             
             var temp: Dictionary<String,Int> = [:]
@@ -306,6 +309,7 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
                  }
             SharedVariable.Shared.folderCount = temp
             
+            SharedVariable.Shared.sortedArray = folderOrdering
             self.Folders = SharedVariable.Shared.folderCount
             
             
@@ -384,7 +388,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     
         func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
             tableview.register(UITableViewCell.self, forCellReuseIdentifier: "default")
-            
+            tableview.register(UITableViewCell.self,forCellReuseIdentifier: "edit")
             if SharedVariable.Shared.folderCount.count != 0 {
                 
                 if  indexPath.row == SharedVariable.Shared.folderCount.count, tableview.isEditing == false {
@@ -397,9 +401,9 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
             return cell
                 
             } else {
-            let cell = tableview.dequeueReusableCell(withIdentifier: "default",for:indexPath)
-            let list = Array(SharedVariable.Shared.folderCount.keys)
-            cell.textLabel!.text = list[indexPath.row]
+            let cell = tableview.dequeueReusableCell(withIdentifier: "edit",for:indexPath)
+                    
+            cell.textLabel!.text = SharedVariable.Shared.sortedArray[indexPath.row]
                     return cell
             }
             
@@ -431,6 +435,14 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
                 self.ref = database.reference()
                 
                 SharedVariable.Shared.folderCount.updateValue(0, forKey: text)
+                SharedVariable.Shared.sortedArray.append(text)
+                var i = 0
+                var z = Dictionary<Int,String>()
+                for key in SharedVariable.Shared.sortedArray {
+                    z.updateValue(key, forKey: i)
+                    i = i + 1
+                }
+                self.ref.child("폴더순서").setValue(z)
                 self.tableview.setEditing(false, animated: true)
                 let indexpath1: IndexPath = IndexPath.init(row: SharedVariable.Shared.folderCount.count-1, section: 0)
                 
