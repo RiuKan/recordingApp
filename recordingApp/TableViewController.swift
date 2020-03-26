@@ -135,7 +135,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         //        return counts
         //        }
         if SharedVariable.Shared.valueLast.count != 0, SharedVariable.Shared.sortedArray.count != 0 {
-            return SharedVariable.Shared.valueLast[SharedVariable.Shared.sortedArray[section]]!.count
+            return SharedVariable.Shared.valueLast[SharedVariable.Shared.sortedArray[section]]!.count - 1
         } else {
             return 0
         }

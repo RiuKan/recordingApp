@@ -294,20 +294,15 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
             let value1 = snapshot.childSnapshot(forPath: "FileNames").value as? Dictionary<String,Dictionary<String,Dictionary<String,String>>>
             let valueFolders = snapshot.childSnapshot(forPath:"폴더순서").value as? Array<String>
             
-            guard let value11 = value1 else { return print("error") }
-            guard let folderOrdering = valueFolders else{ return }
+            guard let value11 = value1 else { return print("FileNames 파이어베이스 불러오기 오류") }
+            guard let folderOrdering = valueFolders else{ return print("폴더순서 파이어베이스 불러오기 오류") }
             
             
             SharedVariable.Shared.valueLast = value11
             
             
             
-            var temp: Dictionary<String,Int> = [:]
-                for folder in SharedVariable.Shared.valueLast.keys {
-                    let list:Int = SharedVariable.Shared.valueLast[folder]!.count
-                    temp.updateValue(list, forKey: folder)
-                 }
-            SharedVariable.Shared.folderCount = temp
+            
             
             SharedVariable.Shared.sortedArray = folderOrdering
             self.Folders = SharedVariable.Shared.folderCount
@@ -430,7 +425,11 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
             let confirmAction = UIAlertAction(title: "생성", style: .default) { (UIAlertAction) in
                 
                 guard let text = alert.textFields?[0].text else {return}
-                
+                let date = Date()
+                let dateFormat = DateFormatter()
+                dateFormat.timeZone = TimeZone(abbreviation: "GMT")
+                dateFormat.dateFormat = "yyyy.MM.dd.hh.mm.ss"
+                let dateToday = dateFormat.string(from: date)
                 let database = Database.database()
                 self.ref = database.reference()
                 
@@ -442,7 +441,8 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
                     z.updateValue(key, forKey: i)
                     i = i + 1
                 }
-                self.ref.child("폴더순서").setValue(z)
+                self.ref.child("폴더순서").setValue("\(z)")
+            self.ref.child("FileNames").child("\(text)").child("폴더수정날짜").setValue(["0":"\(dateToday)"])
                 self.tableview.setEditing(false, animated: true)
                 let indexpath1: IndexPath = IndexPath.init(row: SharedVariable.Shared.folderCount.count-1, section: 0)
                 
@@ -475,10 +475,43 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
             return false
         }
     }
-    
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        
+        let deleteAction = UITableViewRowAction(style: .destructive, title: "삭제") { (UITableViewRowAction, IndexPath) in
+            let alertViewCon = UIAlertController(title: "삭제 및 이동", message: "폴더와 함께 폴더 내용을 모두 삭제하거나, 폴더 내용을 기본 폴더로 옮길 수 있습니다.", preferredStyle: .actionSheet)
+            let deleteAllAction = UIAlertAction(title: "모든 파일 삭제", style: .destructive) { (UIAlertAction) in
+                let storage = Storage.storage()
+                let storageref = storage.reference()
+                let folderName1 = tableView.cellForRow(at: indexPath)?.textLabel?.text
+                guard let folderName = folderName1 else{return}
+                self.ref.child("FileNames").child("\(folderName)").removeValue()
+                var fileNames = Array(SharedVariable.Shared.valueLast["\(folderName)"]!.keys)
+                fileNames.remove(at: fileNames.firstIndex(of: "폴더수정날짜")!)
+                for file in fileNames { storageref.child("Recordings/이전/\(file).m4a").delete { (Error) in
+                    print("\(Error)")
+                    }
+                }
+            
+            
+                    SharedVariable.Shared.sortedArray.remove(at: SharedVariable.Shared.sortedArray.firstIndex(of: "\(folderName)")!)
+                SharedVariable.Shared.valueLast.removeValue(forKey: folderName)
+            }
+                let moveFiles = UIAlertAction(title: <#T##String?#>, style: <#T##UIAlertAction.Style#>, handler: <#T##((UIAlertAction) -> Void)?##((UIAlertAction) -> Void)?##(UIAlertAction) -> Void#>)
+                    
+                    
+                    
+                    
+                    
+                
+                    
+
+            }
+        }
+        return
+    }
     func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
          
-        return .delete
+        return .none
        
     }
 }
