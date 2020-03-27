@@ -292,10 +292,10 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
             
             
             let value1 = snapshot.childSnapshot(forPath: "FileNames").value as? Dictionary<String,Dictionary<String,Dictionary<String,String>>>
-            let valueFolders = snapshot.childSnapshot(forPath:"폴더순서").value as? Array<String>
+            
             
             guard let value11 = value1 else { return print("FileNames 파이어베이스 불러오기 오류") }
-            guard let folderOrdering = valueFolders else{ return print("폴더순서 파이어베이스 불러오기 오류") }
+            
             
             
             SharedVariable.Shared.valueLast = value11
@@ -304,7 +304,7 @@ class ViewController: UIViewController, AVAudioRecorderDelegate,UINavigationCont
             
             
             
-            SharedVariable.Shared.sortedArray = folderOrdering
+            
             self.Folders = SharedVariable.Shared.folderCount
             
             
@@ -372,11 +372,11 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     
         
         func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-            if SharedVariable.Shared.folderCount.count == 0{
+            if SharedVariable.Shared.valueLast.keys.count == 0{
                 return 1
             } else {
                 
-                    return SharedVariable.Shared.folderCount.count + 1
+                return SharedVariable.Shared.valueLast.keys.count + 1
                 
             }
         }
@@ -384,14 +384,14 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
             tableview.register(UITableViewCell.self, forCellReuseIdentifier: "default")
             tableview.register(UITableViewCell.self,forCellReuseIdentifier: "edit")
-            if SharedVariable.Shared.folderCount.count != 0 {
+            if SharedVariable.Shared.valueLast.keys.count != 0 {
                 
-                if  indexPath.row == SharedVariable.Shared.folderCount.count, tableview.isEditing == false {
+                if  indexPath.row == SharedVariable.Shared.valueLast.keys.count, tableview.isEditing == false {
                     let cell = tableview.dequeueReusableCell(withIdentifier: "default",for:indexPath)
                     cell.textLabel!.text = "폴더 편집"
                     cell.textLabel!.textColor = UIColor.lightGray
                     return cell
-            } else if tableview.isEditing == true ,indexPath.row == SharedVariable.Shared.folderCount.count  {
+            } else if tableview.isEditing == true ,indexPath.row == SharedVariable.Shared.valueLast.keys.count  {
                 let cell = tableview.dequeueReusableCell(withIdentifier: "default",for:indexPath)
             return cell
                 
@@ -411,7 +411,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         }
     func tableView (_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableview.deselectRow(at: indexPath, animated: true)
-        if indexPath.row == SharedVariable.Shared.folderCount.count,tableview.isEditing == false {
+        if indexPath.row == SharedVariable.Shared.valueLast.keys.count,tableview.isEditing == false {
             let cell = self.tableview.cellForRow(at: indexPath)
             cell?.textLabel!.text = "폴더 추가"
             cell?.textLabel!.textColor = UIColor.lightGray
@@ -419,7 +419,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
            
             
             
-        } else if indexPath.row == SharedVariable.Shared.folderCount.count, tableview.isEditing == true  {
+        } else if indexPath.row == SharedVariable.Shared.valueLast.keys.count, tableview.isEditing == true  {
                         let alert = UIAlertController.init(title: "폴더추가", message: "추가할 폴더의 이름을 적으시오.", preferredStyle: .alert)
             let cancleAction = UIAlertAction(title: "취소", style: .cancel) {(UIAlertAction) in self.backgroundView.removeFromSuperview()}
             let confirmAction = UIAlertAction(title: "생성", style: .default) { (UIAlertAction) in
@@ -427,26 +427,29 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
                 guard let text = alert.textFields?[0].text else {return}
                 let date = Date()
                 let dateFormat = DateFormatter()
-                dateFormat.timeZone = TimeZone(abbreviation: "GMT")
-                dateFormat.dateFormat = "yyyy.MM.dd.hh.mm.ss"
+                dateFormat.timeZone = TimeZone(abbreviation: "KST")
+                dateFormat.dateFormat = "yyyy.MM.dd.HH.mm.ss"
                 let dateToday = dateFormat.string(from: date)
                 let database = Database.database()
                 self.ref = database.reference()
                 
-                SharedVariable.Shared.folderCount.updateValue(0, forKey: text)
-                SharedVariable.Shared.sortedArray.append(text)
-                var i = 0
-                var z = Dictionary<Int,String>()
-                for key in SharedVariable.Shared.sortedArray {
-                    z.updateValue(key, forKey: i)
-                    i = i + 1
-                }
-                self.ref.child("폴더순서").setValue("\(z)")
-            self.ref.child("FileNames").child("\(text)").child("폴더수정날짜").setValue(["0":"\(dateToday)"])
+//                SharedVariable.Shared.folderCount.updateValue(0, forKey: text)
+//                SharedVariable.Shared.sortedArray.append(text)
+//                var i = 0
+//                var z = Dictionary<Int,String>()
+//                for key in SharedVariable.Shared.sortedArray {
+//                    z.updateValue(key, forKey: i)
+//                    i = i + 1
+//                }
+//                self.ref.child("폴더순서").setValue("\(z)")
+                SharedVariable.Shared.valueLast["\(text)"]?["폴더수정날짜"] = ["날짜":"\(dateToday)"]
+                self.ref.child("FileNames").child("\(text)").child("폴더수정날짜").setValue(["날짜":"\(dateToday)"])
                 self.tableview.setEditing(false, animated: true)
-                let indexpath1: IndexPath = IndexPath.init(row: SharedVariable.Shared.folderCount.count-1, section: 0)
+                let indexpath1: IndexPath = IndexPath.init(row: SharedVariable.Shared.valueLast.keys.count-1, section: 0)
                 
-                self.tableview.insertRows(at: [indexpath1], with: .right)
+                self.tableview.reloadData()
+                
+                
                 
                 
                 
@@ -469,7 +472,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
 
         }
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        if indexPath.row < SharedVariable.Shared.folderCount.count {
+        if indexPath.row < SharedVariable.Shared.valueLast.keys.count {
             return true
         } else {
             return false
@@ -478,12 +481,26 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         
         let deleteAction = UITableViewRowAction(style: .destructive, title: "삭제") { (UITableViewRowAction, IndexPath) in
+            let folderName1 = tableView.cellForRow(at: indexPath)?.textLabel?.text
+            guard let folderName = folderName1 else{return}
+            let isFolder_opt = SharedVariable.Shared.valueLast["\(folderName)"]?.removeValue(forKey: "폴더수정날짜")
+            
+            guard let isFolder = isFolder_opt else {print("deleteAction에서 불러오는 isFolder값이 없음")
+                return}
+            print(isFolder["\(folderName)"]?.isEmpty)
+            let isFolderEmpty = isFolder["\(folderName)"]?.isEmpty
+                
+            
+            if  isFolderEmpty == true {
+                SharedVariable.Shared.valueLast.removeValue(forKey: "\(folderName)")
+                self.ref.child("FileNames").child("\(folderName)").removeValue()
+            } else {
             let alertViewCon = UIAlertController(title: "삭제 및 이동", message: "폴더와 함께 폴더 내용을 모두 삭제하거나, 폴더 내용을 기본 폴더로 옮길 수 있습니다.", preferredStyle: .actionSheet)
+            
             let deleteAllAction = UIAlertAction(title: "모든 파일 삭제", style: .destructive) { (UIAlertAction) in
                 let storage = Storage.storage()
                 let storageref = storage.reference()
-                let folderName1 = tableView.cellForRow(at: indexPath)?.textLabel?.text
-                guard let folderName = folderName1 else{return}
+                
                 self.ref.child("FileNames").child("\(folderName)").removeValue()
                 var fileNames = Array(SharedVariable.Shared.valueLast["\(folderName)"]!.keys)
                 fileNames.remove(at: fileNames.firstIndex(of: "폴더수정날짜")!)
@@ -493,11 +510,30 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
                 }
             
             
-                    SharedVariable.Shared.sortedArray.remove(at: SharedVariable.Shared.sortedArray.firstIndex(of: "\(folderName)")!)
+                    
+               
                 SharedVariable.Shared.valueLast.removeValue(forKey: folderName)
             }
-                let moveFiles = UIAlertAction(title: <#T##String?#>, style: <#T##UIAlertAction.Style#>, handler: <#T##((UIAlertAction) -> Void)?##((UIAlertAction) -> Void)?##(UIAlertAction) -> Void#>)
+            let moveFiles = UIAlertAction(title: "기본폴더로 이동", style: .default){(UIAlertAction) in
+                var tmpEraseDic = SharedVariable.Shared.valueLast["\(folderName)"]
+                tmpEraseDic?.removeValue(forKey: "폴더수정날짜")
+                guard let tmpEraseDic1 = tmpEraseDic else {return print("폴더 내용 없음")} // temporary 폴더 내용 없음
+                SharedVariable.Shared.valueLast.updateValue(tmpEraseDic1, forKey: "기본폴더")
+                SharedVariable.Shared.folderCount.removeValue(forKey: "\(folderName)")
                     
+                guard let countOfErasedFolder = SharedVariable.Shared.valueLast["기본폴더"] else { print("폴더 파일 이동에서 foldercount 변경 과정에서 기본 폴더 내용물 없음 ")
+                    return}
+                SharedVariable.Shared.folderCount.updateValue(countOfErasedFolder.keys.count-1, forKey: "기본폴더")
+                self.ref.child("FileNames").child("기본폴더").setValue(SharedVariable.Shared.valueLast["기본폴더"])
+                self.ref.child("FileNames").child("\(folderName)").removeValue()
+                
+                            }
+            let cancleAction = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+            alertViewCon.addAction(moveFiles)
+            alertViewCon.addAction(deleteAllAction)
+            alertViewCon.addAction(cancleAction)
+            
+            
                     
                     
                     
@@ -507,7 +543,8 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
 
             }
         }
-        return
+        return [deleteAction]
+        
     }
     func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
          

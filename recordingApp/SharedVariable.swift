@@ -14,18 +14,25 @@ class SharedVariable:NSObject {
     
     var audioPlayer: AVAudioPlayer!
     var nameOfFile: String!
+    var first: Bool = true
     var valueLast: Dictionary<String,Dictionary<String, Dictionary<String, String>>> = [:] {didSet{
+        if first == true {
         var temp: Dictionary<String,Int> = [:]
-            for folder in SharedVariable.Shared.valueLast.keys {
+        let folders: Array<String> = Array(SharedVariable.Shared.valueLast.keys)
+            for folder in folders {
                 let list:Int = SharedVariable.Shared.valueLast[folder]!.count
                 temp.updateValue(list, forKey: folder)
              }
-        SharedVariable.Shared.folderCount = temp
+        folderCount = temp
+        sortedArray = folders.sorted(by: dicSortedArraySort(s1:s2:))
+            first = false
+        }else {
+            return
+        }
         }}
     var tableview: UITableView = UITableView.init()
     var nameRecieve = Dictionary<String,Array<String>>()
     var sortedArray = Array<String>(){didSet{
-        
         namerecieveMaking()
         
         tableview.reloadData()
@@ -47,6 +54,8 @@ class SharedVariable:NSObject {
             }
         }
     }
+   
+   
     func dicDateSortFunc (s1: String, s2: String) -> Bool {
         let d1 = self.valueLast[sortedArrayi]?[s1]?["날짜"]
         let d2 = self.valueLast[sortedArrayi]?[s2]?["날짜"]
@@ -89,6 +98,23 @@ class SharedVariable:NSObject {
             return resultTime1 > resultTime2
         }
         
+    }
+    func dicSortedArraySort (s1: String, s2: String) -> Bool {
+        let d1_opt = SharedVariable.Shared.valueLast[s1]?["폴더수정날짜"]?["날짜"]
+        let d2_opt = SharedVariable.Shared.valueLast[s2]?["폴더수정날짜"]?["날짜"]
+        guard let d1 = d1_opt , let d2 = d2_opt else {
+            print("폴더 정렬, 날짜 불러오기 오류, 싱글톤 Line 97")
+            return true }
+        let dateformatter = DateFormatter()
+        dateformatter.dateFormat = "yy.MM.dd.HH.mm.ss"
+        let d1result_opt = dateformatter.date(from: d1)
+        let d2result_opt = dateformatter.date(from: d2)
+        
+        guard let d1result = d1result_opt,let d2result = d2result_opt else {
+            print("String -> Date 변환 오류")
+            return true
+        }
+        return d1result < d2result
     }
     
     func showToast(_ message : String,_ view: UIView) {
